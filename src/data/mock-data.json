@@ -1,0 +1,32 @@
+[
+  {
+    "type": "textbox",
+    "name": "ASSET_TYPE_CODE",
+    "id": "AssetTypeCodeId",
+    "label": "Asset Type Code",
+    "value": "",
+    "placeholder": "",
+    "datatype": "text"
+  },
+  {
+    "type": "textbox",
+    "name": "ASSET_TYPE_CODE",
+    "id": "AssetTypeCodeId",
+    "label": "Asset Type Code",
+    "value": "",
+    "placeholder": "",
+    "isFromURL": false,
+    "ddlType": "all",
+    "environment": "FOU",
+    "items": [
+      {
+        "key": "1",
+        "value": "Yes"
+      },
+      {
+        "key": "0",
+        "value": "No"
+      }
+    ]
+  }
+]
