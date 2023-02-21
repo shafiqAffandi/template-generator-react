@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import usePageStore from "../../../stores/PageStore";
-import { SearchComponentType } from "../../../types/Type";
+import {
+  InputsSearchComponentType,
+  SearchComponentType,
+} from "../../../types/Type";
 import {
   generateIdentifier,
   removeUndefinedProp,
   transformToObjUndefined,
 } from "../../../utils/util";
-import { Form } from "../../ui-components/FormComponent";
 import { Input } from "../../ui-components/InputComponent";
 import { Modal } from "../../ui-components/ModalComponent";
 import { Select } from "../../ui-components/SelectComponent";
@@ -15,23 +17,12 @@ import { Select } from "../../ui-components/SelectComponent";
 type Props = {
   open: boolean;
   onClose: () => void;
-  data?: any;
+  index: number;
+  data?: InputsSearchComponentType;
   id: string;
-  index?: number;
 };
 
-type Inputs = {
-  type: string;
-  label: string;
-  name: string;
-  isFromURL: boolean;
-  ddlType: "all" | "one" | "none";
-  environment: string;
-  path: string;
-  items: { key: string; value: string }[];
-};
-
-function AddSearchModal({ open, onClose, id, index }: Props) {
+function AddSearchModal({ open, onClose, id, data, index }: Props) {
   if (!open) return null;
   const [isDdl, setIsDdl] = useState(false);
 
@@ -44,7 +35,18 @@ function AddSearchModal({ open, onClose, id, index }: Props) {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<InputsSearchComponentType>({
+    defaultValues: {
+      ddlType: data?.ddlType,
+      name: data?.name,
+      label: data?.label,
+      type: data?.type,
+      environment: data?.environment,
+      isFromURL: data?.isFromURL,
+      items: data?.items,
+      path: data?.path,
+    },
+  });
 
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
@@ -108,7 +110,7 @@ function AddSearchModal({ open, onClose, id, index }: Props) {
     return type;
   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<InputsSearchComponentType> = (data) => {
     const comp: SearchComponentType = {
       id: generateIdentifier(data.label, "search"),
       type: data.type,
@@ -123,8 +125,12 @@ function AddSearchModal({ open, onClose, id, index }: Props) {
       environment: data.environment,
       path: data.path,
     };
-    // console.log(removeUndefinedProp(comp));
-    pageStore.addSearchComponent(id, removeUndefinedProp(comp));
+    if (index === -1) {
+      pageStore.addSearchComponent(id, removeUndefinedProp(comp));
+    }
+    if (index > -1) {
+      pageStore.editSearchComponent(id, index, removeUndefinedProp(comp));
+    }
     reset();
     onClose();
   };
@@ -295,7 +301,7 @@ function AddSearchModal({ open, onClose, id, index }: Props) {
           <div className="text-center">
             <input
               type="submit"
-              value={"Add"}
+              value={data === undefined ? "Add" : "Save Changes"}
               className="inline-block w-full rounded bg-green-500 px-6 py-2.5 text-xs font-bold capitalize leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:text-white hover:shadow-lg"
             />
           </div>

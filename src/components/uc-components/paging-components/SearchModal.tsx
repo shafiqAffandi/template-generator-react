@@ -5,6 +5,10 @@ import TableWrapper from "../../table-components/TableWrapper";
 import AddSearchModal from "./AddSearchModal";
 import { Modal } from "../../ui-components/ModalComponent";
 import { matchesEl } from "../../../utils/util";
+import {
+  InputsSearchComponentType,
+  SearchComponentType,
+} from "../../../types/Type";
 
 type Props = {
   id: string;
@@ -15,6 +19,10 @@ type Props = {
 function SearchModal({ id, open, onClose }: Props) {
   if (!open) return null;
   const [isOpen, setIsOpen] = useState(false);
+  const [componentData, setComponentData] = useState(
+    {} as InputsSearchComponentType
+  );
+  const [idxData, setIdxData] = useState(-1);
   const pageStore = usePageStore();
   const pages = pageStore.pages;
   const pageIndex = pages.findIndex((el) => matchesEl(el, id));
@@ -38,12 +46,21 @@ function SearchModal({ id, open, onClose }: Props) {
     []
   );
 
+  const onCloseModal = () => {
+    //@ts-ignore
+    setComponentData(() => {});
+    setIdxData(() => -1);
+    setIsOpen(() => false);
+  };
+
   const onEdit = (index: number) => {
-    console.log(index);
+    //@ts-ignore
+    setComponentData(() => data[index]);
+    setIdxData(() => index);
+    setIsOpen(() => true);
   };
 
   const onRemove = (index: number) => {
-    console.log(index);
     pageStore.removeSearchComponent(id, index);
   };
 
@@ -89,7 +106,9 @@ function SearchModal({ id, open, onClose }: Props) {
       <AddSearchModal
         open={isOpen}
         id={id}
-        onClose={() => setIsOpen(() => false)}
+        data={componentData}
+        index={idxData}
+        onClose={() => onCloseModal()}
       />
     </>
   );

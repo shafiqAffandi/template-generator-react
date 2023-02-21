@@ -9,6 +9,7 @@ import { PagingInputType } from "../../../types/Type";
 
 type Props = {
   identifier: string;
+  data?: PagingInputType;
   onClose: () => void;
 };
 
@@ -18,29 +19,40 @@ type InputsType = {
   exportExcel: boolean;
 };
 
-function AddPagingComponent({ identifier, onClose }: Props) {
+function AddPagingComponent({ identifier, onClose, data }: Props) {
   const {
     control,
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<InputsType>();
+  } = useForm<InputsType>({
+    defaultValues: {
+      title: data?.pagingInput.title ?? "",
+      querystring: data?.pagingInput.querystring?.name ?? "",
+      exportExcel: data?.pagingInput.exportExcel ?? false,
+    },
+  });
 
   const pageStore = usePageStore();
 
-  const onSubmit: SubmitHandler<InputsType> = (data) => {
+  const onSubmit: SubmitHandler<InputsType> = (dataInput) => {
     const comp: PagingInputType = {
       pagingInput: {
-        title: data.title,
-        querystring: { name: data.querystring },
-        exportExcel: data.exportExcel,
+        title: dataInput.title,
+        querystring: { name: dataInput.querystring },
+        exportExcel: dataInput.exportExcel,
         component: [],
         headerList: [],
         bodyList: [],
       },
     };
-    pageStore.addPaging(identifier, comp);
+    if (data === undefined) {
+      pageStore.addPaging(identifier, comp);
+    }
+    if (data !== undefined) {
+      pageStore.editPaging(identifier, comp);
+    }
     onClose();
   };
 
@@ -114,83 +126,11 @@ function AddPagingComponent({ identifier, onClose }: Props) {
               />
             </div>
           </div>
-
-          {/* <div className="mb-3 xl:w-96">
-            <label className="form-label mb-2 inline-block capitalize text-gray-700">
-              Search Input
-            </label>
-            <>
-              <ul className="w-full">
-                {fields.map((item, index) => (
-                  <div key={item.id} className="grid grid-cols-12">
-                    <div className="col-span-6 p-1">
-                      <label>Type</label>
-                      <input
-                        className="
-                          form-control
-                          m-0
-                          block
-                          w-full
-                          rounded
-                          border
-                          border-solid
-                          border-gray-300
-                          bg-white bg-clip-padding
-                          px-3 py-1.5 text-base
-                          font-normal
-                          text-gray-700
-                          transition
-                          ease-in-out
-                          focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
-                        "
-                        {...register(`searchComponent.${index}.type`)}
-                      />
-                    </div>
-                    <div className="col-span-6 p-1">
-                      <label>Label</label>
-                      <input
-                        className="
-                          form-control
-                          m-0
-                          block
-                          w-full
-                          rounded
-                          border
-                          border-solid
-                          border-gray-300
-                          bg-white bg-clip-padding
-                          px-3 py-1.5 text-base
-                          font-normal
-                          text-gray-700
-                          transition
-                          ease-in-out
-                          focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
-                        "
-                        {...register(`searchComponent.${index}.label`)}
-                      />
-                    </div>
-                    <button type="button" onClick={() => remove(index)}>
-                      Delete
-                    </button>
-                  </div>
-                ))}
-              </ul>
-              <button type="button" onClick={() => append({ firstName: "" })}>
-                append
-              </button>
-            </>
-          </div>
-          <div className="mb-3 xl:w-96">
-            <label className="form-label mb-2 inline-block capitalize text-gray-700">
-              Header & Body Input
-            </label>
-            <GridViewComponent />
-          </div> */}
         </div>
         <div className="w-full">
           <input
             type="submit"
-            value={"Add"}
+            value={data === undefined ? "Add" : "Save Changes"}
             className="inline-block w-full rounded bg-green-500 px-6 py-2.5 text-xs font-bold capitalize leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:text-white hover:shadow-lg"
           />
         </div>

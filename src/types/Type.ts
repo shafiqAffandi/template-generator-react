@@ -59,3 +59,14 @@ export type GridViewComponentType = {
 export type SearchComponentType =
   | SearchComponentTextboxType
   | SearchComponentDdlType;
+
+export type InputsSearchComponentType = {
+  type: string;
+  label: string;
+  name: string;
+  isFromURL: boolean;
+  ddlType: "all" | "one" | "none";
+  environment: string;
+  path: string;
+  items: { key: string; value: string }[];
+};

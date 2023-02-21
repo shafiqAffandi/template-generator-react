@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PagingInputType } from "../types/Type";
 import FormComponent from "./uc-components/form-component/FormComponent";
 import AddPagingComponent from "./uc-components/paging-components/AddPagingComponent";
 import ViewComponent from "./uc-components/view-component/ViewComponent";
@@ -7,13 +8,20 @@ import { Modal } from "./ui-components/ModalComponent";
 type Props = {
   open: boolean;
   identifier: string;
+  data?: PagingInputType;
+  type?: string;
   onClose: () => void;
 };
 
-function ComponentModal({ open, identifier, onClose }: Props) {
+function ComponentModal({ open, identifier, onClose, data, type }: Props) {
   if (!open) return null;
-
   const [ucType, setUcType] = useState("");
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setUcType(() => type ?? "");
+    }
+  }, []);
 
   const onCancleHandler = () => {
     setUcType(() => "");
@@ -48,6 +56,7 @@ function ComponentModal({ open, identifier, onClose }: Props) {
         {ucType === "paging" && (
           <AddPagingComponent
             identifier={identifier}
+            data={data}
             onClose={() => onCancleHandler()}
           />
         )}
