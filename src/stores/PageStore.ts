@@ -5,31 +5,30 @@ import {
   PagingInputType,
   SearchComponentType,
 } from "../types/Type";
-
-const toUpper = (str: string) => {
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substr(1);
-    })
-    .join(" ");
-};
+import { generateIdentifier, matchesEl, toUpper } from "../utils/util";
 
 const addPage = (pages: PageType[], page: PageType): PageType[] => [
   ...pages,
   {
     title: page.title,
-    id: toUpper(page.title).replace(/\s+/g, "") + "Id",
+    id: generateIdentifier(page.title),
     addButton: page.addButton,
-    hideButton: page.hideButton,
+    backButton: page.backButton,
     paging: page?.paging,
   },
 ];
 
-function matchesEl(el: PageType, id: string) {
-  return el.id === id;
-}
+const editPage = (
+  pages: PageType[],
+  page: PageType,
+  id: string
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].title = page.title;
+  pages[affectedPageIndex].addButton = page.addButton;
+  pages[affectedPageIndex].backButton = page.backButton;
+  return [...pages];
+};
 
 const removePage = (pages: PageType[], id: string): PageType[] => {
   return pages.filter((el) => {
@@ -42,50 +41,66 @@ const addPaging = (
   id: string,
   comp: PagingInputType
 ): PageType[] => {
-  const affectedPage = pages.filter((el) => matchesEl(el, id));
-  affectedPage[0].paging = comp;
-  const _page = { ...affectedPage[0] };
-  return Object.assign(pages, _page);
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging = comp;
+  return [...pages];
 };
 
 const addSearchComponent = (
   pages: PageType[],
   id: string,
-  comp: SearchComponentType[]
+  comp: SearchComponentType
 ): PageType[] => {
-  const affectedPage = pages.filter((el) => matchesEl(el, id));
-  if (affectedPage[0].paging?.pagingInput.component === undefined)
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  if (pages[affectedPageIndex].paging?.pagingInput.component === undefined)
     return [...pages];
-  affectedPage[0].paging.pagingInput.component = comp;
-  const _page = { ...affectedPage[0] };
-  return Object.assign(pages, _page);
+  pages[affectedPageIndex].paging?.pagingInput.component?.push(comp);
+  return [...pages];
+};
+
+const removeSearchComponent = (
+  pages: PageType[],
+  id: string,
+  index: number
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging?.pagingInput.component?.splice(index, 1);
+  return [...pages];
 };
 
 type Store = {
   pages: PageType[];
   newPage: PageType;
   addPage: () => void;
-  setNewPage: (title: string, addButton: boolean, hideButton: boolean) => void;
+  editPage: (id: string) => void;
+  setNewPage: (title: string, addButton: boolean, backButton: boolean) => void;
   removePage: (id: string) => void;
   addPaging: (id: string, comp: PagingInputType) => void;
-  addSearchComponent: (id: string, comp: SearchComponentType[]) => void;
+  addSearchComponent: (id: string, comp: SearchComponentType) => void;
+  removeSearchComponent: (id: string, index: number) => void;
   // addGridViewComponent: (id: string, comp: GridViewComponentType[]) => void;
 };
 
 const usePageStore = create<Store>((set) => ({
   pages: [],
-  newPage: { title: "", id: "", addButton: false, hideButton: false },
+  newPage: { title: "", id: "", addButton: false, backButton: false },
   addPage: () => {
     set((state) => ({
       ...state,
       pages: addPage(state.pages, state.newPage),
-      newPage: { title: "", id: "", addButton: false, hideButton: false },
+      newPage: { title: "", id: "", addButton: false, backButton: false },
     }));
   },
-  setNewPage: (title: string, addButton: boolean, hideButton: boolean) => {
+  editPage: (id: string) => {
     set((state) => ({
       ...state,
-      newPage: { title, id: title, addButton, hideButton },
+      pages: editPage(state.pages, state.newPage, id),
+    }));
+  },
+  setNewPage: (title: string, addButton: boolean, backButton: boolean) => {
+    set((state) => ({
+      ...state,
+      newPage: { title, id: title, addButton, backButton },
     }));
   },
   removePage: (id: string) => {
@@ -100,10 +115,16 @@ const usePageStore = create<Store>((set) => ({
       pages: addPaging(state.pages, id, component),
     }));
   },
-  addSearchComponent: (id: string, component: SearchComponentType[]) => {
+  addSearchComponent: (id: string, component: SearchComponentType) => {
     set((state) => ({
       ...state,
       pages: addSearchComponent(state.pages, id, component),
+    }));
+  },
+  removeSearchComponent: (id: string, index: number) => {
+    set((state) => ({
+      ...state,
+      pages: removeSearchComponent(state.pages, id, index),
     }));
   },
 }));

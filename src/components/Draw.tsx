@@ -9,7 +9,9 @@ function Draw() {
     <>
       <Navbar />
       {store.pages.map((page) => (
-        <Page onRemove={() => store.removePage(page.id)}>{page}</Page>
+        <Page key={page.id} onRemove={() => store.removePage(page.id)}>
+          {page}
+        </Page>
         // <p className="text-white">{JSON.stringify(page)}</p>
       ))}
     </>

@@ -2,7 +2,7 @@ export type PageType = {
   title: string;
   id: string;
   addButton: boolean;
-  hideButton: boolean;
+  backButton: boolean;
   paging?: PagingInputType;
 };
 
@@ -32,6 +32,7 @@ type SearchComponentTypeBase = {
   name?: string;
   value?: string;
   placeholder?: string;
+  id?: string;
 };
 
 type SearchComponentTextboxType = SearchComponentTypeBase & {
@@ -42,7 +43,8 @@ type SearchComponentDdlType = SearchComponentTypeBase & {
   isFromURL?: boolean;
   ddlType?: "all" | "one" | "none";
   environment?: string;
-  items?: Record<string, string>[];
+  items?: { key: string; value: string }[];
+  path?: string;
 };
 
 export type GridViewComponentType = {
