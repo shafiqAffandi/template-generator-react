@@ -13,7 +13,7 @@ function PagingComponent({ id, data }: Props) {
   const [isGridOpen, setIsGridOpen] = useState(false);
 
   return (
-    <>
+    <div className="mt-3 border-2 border-solid border-blue-500 p-8">
       <div>
         <div>{JSON.stringify(data)}</div>
         <button
@@ -39,7 +39,7 @@ function PagingComponent({ id, data }: Props) {
         open={isGridOpen}
         onClose={() => setIsGridOpen(() => false)}
       />
-    </>
+    </div>
   );
 }
 
