@@ -14,8 +14,8 @@ export type PagingInputType = {
       [name: string]: string;
     };
     component?: SearchComponentType[];
-    headerList?: [];
-    bodyList?: [];
+    headerList?: HeaderPagingType[];
+    bodyList?: BodyPagingType[];
   };
   criteria?: CriteriaPaging[];
 };
@@ -47,15 +47,6 @@ type SearchComponentDdlType = SearchComponentTypeBase & {
   path?: string;
 };
 
-export type GridViewComponentType = {
-  headerType: "label" | "sort";
-  bodyType: "text" | "boolean" | "action";
-  position: "left" | "center" | "right";
-  label: string;
-  columnName: string;
-  property: string;
-};
-
 export type SearchComponentType =
   | SearchComponentTextboxType
   | SearchComponentDdlType;
@@ -69,4 +60,28 @@ export type InputsSearchComponentType = {
   environment: string;
   path: string;
   items: { key: string; value: string }[];
+};
+
+export type HeaderPagingType = {
+  type: string;
+  position: string;
+  label: string;
+  name?: string;
+};
+
+export type BodyPagingType = {
+  type: string;
+  position: string;
+  property: string;
+  action?: [any];
+};
+
+export type InputsGridViewType = {
+  type: string;
+  label: string;
+  sortable: boolean;
+  position: "left" | "center" | "right";
+  name: string;
+  property: string;
+  action: any;
 };

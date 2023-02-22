@@ -36,3 +36,21 @@ export function transformToObjUndefined(arr: string[]) {
   }
   return obj;
 }
+
+export function setLocalStorage(key: string, item: any) {
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+export function getLocalStorage(key: string) {
+  if (typeof window === "undefined") return;
+  const item = localStorage.getItem(key) ?? "";
+  return JSON.parse(item);
+}
+
+export function removeLocalStorage(key: string) {
+  localStorage.removeItem(key);
+}
+
+export function clearLocalStorage() {
+  localStorage.clear();
+}

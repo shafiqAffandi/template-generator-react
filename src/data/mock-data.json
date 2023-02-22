@@ -1,32 +1,20 @@
 [
   {
-    "type": "textbox",
-    "name": "ASSET_TYPE_CODE",
-    "id": "AssetTypeCodeId",
+    "type": "sort",
+    "position": "left",
     "label": "Asset Type Code",
-    "value": "",
-    "placeholder": "",
-    "datatype": "text"
+    "name": "ASSET_TYPE_CODE"
   },
   {
-    "type": "textbox",
-    "name": "ASSET_TYPE_CODE",
-    "id": "AssetTypeCodeId",
-    "label": "Asset Type Code",
-    "value": "",
-    "placeholder": "",
-    "isFromURL": false,
-    "ddlType": "all",
-    "environment": "FOU",
-    "items": [
-      {
-        "key": "1",
-        "value": "Yes"
-      },
-      {
-        "key": "0",
-        "value": "No"
-      }
-    ]
+    "type": "sort",
+    "position": "left",
+    "label": "Asset Type Name",
+    "name": "ASSET_TYPE_NAME"
+  },
+  {
+    "type": "sort",
+    "position": "center",
+    "label": "Active Status",
+    "name": "IS_ACTIVE"
   }
 ]

@@ -9,7 +9,7 @@ import {
   generateIdentifier,
   removeUndefinedProp,
   transformToObjUndefined,
-} from "../../../utils/util";
+} from "../../../utils/utils";
 import { Input } from "../../ui-components/InputComponent";
 import { Modal } from "../../ui-components/ModalComponent";
 import { Select } from "../../ui-components/SelectComponent";

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import TableWrapper from "../../table-components/TableWrapper";
 import AddSearchModal from "./AddSearchModal";
 import { Modal } from "../../ui-components/ModalComponent";
-import { matchesEl } from "../../../utils/util";
+import { matchesEl } from "../../../utils/utils";
 import {
   InputsSearchComponentType,
   SearchComponentType,
