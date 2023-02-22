@@ -15,7 +15,10 @@ type Props = {
   open: boolean;
   onClose: () => void;
   index: number;
-  data?: any;
+  data?: {
+    header: HeaderPagingType | undefined;
+    body: BodyPagingType | undefined;
+  };
   id: string;
 };
 
@@ -32,7 +35,16 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<InputsGridViewType>();
+  } = useForm<InputsGridViewType>({
+    defaultValues: {
+      sortable: data?.header?.type === "sort" ? true : false,
+      name: data?.header?.name,
+      label: data?.header?.label,
+      position: data?.header?.position,
+      type: data?.body?.type,
+      property: data?.body?.property,
+    },
+  });
 
   const watchIsSortable = watch("sortable");
 
@@ -78,15 +90,16 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
       pageStore.addHeaderPaging(id, removeUndefinedProp(compHeader));
       pageStore.addBodyPaging(id, removeUndefinedProp(compBody));
     }
-    // if (index > -1) {
-    //   pageStore.editSearchComponent(id, index, removeUndefinedProp(comp));
-    // }
-    // console.log(data);
+    if (index > -1) {
+      pageStore.editHeaderPaging(id, index, removeUndefinedProp(compHeader));
+      pageStore.editBodyPaging(id, index, removeUndefinedProp(compBody));
+    }
     reset();
     onClose();
   };
 
   const onClickCancel = () => {
+    reset();
     onClose();
   };
 

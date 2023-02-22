@@ -121,6 +121,22 @@ const addHeaderPaging = (
   return [...pages];
 };
 
+const editHeaderPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  comp: HeaderPagingType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  const updatedItems = pages[
+    affectedPageIndex
+  ].paging?.pagingInput.headerList?.map((el, index) =>
+    index === idx ? comp : el
+  );
+  pages[affectedPageIndex].paging!.pagingInput.headerList = updatedItems;
+  return [...pages];
+};
+
 const removeHeaderPaging = (
   pages: PageType[],
   id: string,
@@ -140,6 +156,22 @@ const addBodyPaging = (
   if (pages[affectedPageIndex].paging?.pagingInput?.bodyList === undefined)
     return [...pages];
   pages[affectedPageIndex].paging?.pagingInput?.bodyList?.push(comp);
+  return [...pages];
+};
+
+const editBodyPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  comp: BodyPagingType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  const updatedItems = pages[
+    affectedPageIndex
+  ].paging?.pagingInput.bodyList?.map((el, index) =>
+    index === idx ? comp : el
+  );
+  pages[affectedPageIndex].paging!.pagingInput.bodyList = updatedItems;
   return [...pages];
 };
 
@@ -171,8 +203,10 @@ type Store = {
   ) => void;
   removeSearchComponent: (id: string, index: number) => void;
   addHeaderPaging: (id: string, comp: HeaderPagingType) => void;
+  editHeaderPaging: (id: string, idx: number, comp: HeaderPagingType) => void;
   removeHeaderPaging: (id: string, index: number) => void;
   addBodyPaging: (id: string, comp: BodyPagingType) => void;
+  editBodyPaging: (id: string, idx: number, comp: BodyPagingType) => void;
   removeBodyPaging: (id: string, index: number) => void;
   // addGridViewComponent: (id: string, comp: GridViewComponentType[]) => void;
 };
@@ -253,6 +287,16 @@ const usePageStore = create<Store>()(
           pages: addHeaderPaging(state.pages, id, component),
         }));
       },
+      editHeaderPaging: (
+        id: string,
+        idx: number,
+        component: HeaderPagingType
+      ) => {
+        set((state) => ({
+          ...state,
+          pages: editHeaderPaging(state.pages, id, idx, component),
+        }));
+      },
       removeHeaderPaging: (id: string, index: number) => {
         set((state) => ({
           ...state,
@@ -263,6 +307,12 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: addBodyPaging(state.pages, id, component),
+        }));
+      },
+      editBodyPaging: (id: string, idx: number, component: BodyPagingType) => {
+        set((state) => ({
+          ...state,
+          pages: editBodyPaging(state.pages, id, idx, component),
         }));
       },
       removeBodyPaging: (id: string, index: number) => {

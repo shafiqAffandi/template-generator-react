@@ -80,7 +80,7 @@ export type InputsGridViewType = {
   type: string;
   label: string;
   sortable: boolean;
-  position: "left" | "center" | "right";
+  position: string;
   name: string;
   property: string;
   action: any;

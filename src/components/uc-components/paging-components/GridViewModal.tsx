@@ -7,6 +7,7 @@ import mockData from "../../../data/mock-data.json";
 import AddGridViewModal from "./AddGridViewModal";
 import usePageStore from "../../../stores/PageStore";
 import { matchesEl } from "../../../utils/utils";
+import { BodyPagingType, HeaderPagingType } from "../../../types/Type";
 
 type Props = {
   id: string;
@@ -19,6 +20,9 @@ function GridViewModal({ id, open, onClose }: Props) {
   const pageStore = usePageStore();
   const [isOpen, setIsOpen] = useState(false);
   const [idxData, setIdxData] = useState(-1);
+  const [componentData, setComponentData] = useState(
+    {} as { header: HeaderPagingType; body: BodyPagingType }
+  );
   const pages = pageStore.pages;
   const pageIndex = pages.findIndex((el) => matchesEl(el, id));
   const dataHeader = pages[pageIndex].paging?.pagingInput.headerList;
@@ -29,15 +33,23 @@ function GridViewModal({ id, open, onClose }: Props) {
       label: item.label,
     };
   });
+  // const dataProp = {
+  //   header: dataHeader,
+  //   body: dataBody,
+  // };
 
   console.log(data);
 
   const onEdit = (index: number) => {
     console.log("edit index", index);
-    //@ts-ignore
-    // setComponentData(() => data[index]);
-    // setIdxData(() => index);
-    // setIsOpen(() => true);
+    setComponentData(() => {
+      return {
+        header: dataHeader![index],
+        body: dataBody![index],
+      };
+    });
+    setIdxData(() => index);
+    setIsOpen(() => true);
   };
 
   const onRemove = (index: number) => {
@@ -48,7 +60,7 @@ function GridViewModal({ id, open, onClose }: Props) {
 
   const onCloseModal = () => {
     //@ts-ignore
-    // setComponentData(() => {});
+    setComponentData(() => {});
     setIdxData(() => -1);
     setIsOpen(() => false);
   };
@@ -110,7 +122,7 @@ function GridViewModal({ id, open, onClose }: Props) {
       <AddGridViewModal
         open={isOpen}
         id={id}
-        // data={componentData}
+        data={componentData}
         index={idxData}
         onClose={() => onCloseModal()}
       />
