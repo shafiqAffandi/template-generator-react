@@ -8,6 +8,7 @@ import AddGridViewModal from "./AddGridViewModal";
 import usePageStore from "../../../stores/PageStore";
 import { matchesEl } from "../../../utils/utils";
 import { BodyPagingType, HeaderPagingType } from "../../../types/Type";
+import AddActionModal from "./AddActionModal";
 
 type Props = {
   id: string;
@@ -18,7 +19,8 @@ type Props = {
 function GridViewModal({ id, open, onClose }: Props) {
   if (!open) return null;
   const pageStore = usePageStore();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isGridViewOpen, setIsGridViewOpen] = useState(false);
+  const [isActionOpen, setIsActionOpen] = useState(false);
   const [idxData, setIdxData] = useState(-1);
   const [componentData, setComponentData] = useState(
     {} as { header: HeaderPagingType; body: BodyPagingType }
@@ -35,6 +37,8 @@ function GridViewModal({ id, open, onClose }: Props) {
   });
 
   const onEdit = (index: number) => {
+    console.log(index);
+    console.log(dataBody![index]);
     setComponentData(() => {
       return {
         header: dataHeader![index],
@@ -42,7 +46,11 @@ function GridViewModal({ id, open, onClose }: Props) {
       };
     });
     setIdxData(() => index);
-    setIsOpen(() => true);
+    if (dataBody![index].type === "action") {
+      setIsActionOpen(() => true);
+      return;
+    }
+    setIsGridViewOpen(() => true);
   };
 
   const onRemove = (index: number) => {
@@ -54,7 +62,14 @@ function GridViewModal({ id, open, onClose }: Props) {
     //@ts-ignore
     setComponentData(() => {});
     setIdxData(() => -1);
-    setIsOpen(() => false);
+    setIsGridViewOpen(() => false);
+  };
+
+  const onCloseActionModal = () => {
+    //@ts-ignore
+    setComponentData(() => {});
+    setIdxData(() => -1);
+    setIsActionOpen(() => false);
   };
 
   const columns = useMemo(
@@ -87,9 +102,16 @@ function GridViewModal({ id, open, onClose }: Props) {
               <button
                 type="button"
                 className="inline-block rounded bg-slate-600 p-2 capitalize text-white shadow-lg transition duration-100 ease-in-out hover:bg-green-600"
-                onClick={() => setIsOpen(true)}
+                onClick={() => setIsGridViewOpen(true)}
               >
-                add
+                add data
+              </button>
+              <button
+                type="button"
+                className="ml-2 inline-block rounded bg-slate-600 p-2 capitalize text-white shadow-lg transition duration-100 ease-in-out hover:bg-blue-600"
+                onClick={() => setIsActionOpen(true)}
+              >
+                add action
               </button>
             </div>
           </div>
@@ -112,11 +134,18 @@ function GridViewModal({ id, open, onClose }: Props) {
         </div>
       </Modal>
       <AddGridViewModal
-        open={isOpen}
+        open={isGridViewOpen}
         id={id}
         data={componentData}
         index={idxData}
         onClose={() => onCloseModal()}
+      />
+      <AddActionModal
+        open={isActionOpen}
+        id={id}
+        data={componentData}
+        index={idxData}
+        onClose={() => onCloseActionModal()}
       />
     </>
   );

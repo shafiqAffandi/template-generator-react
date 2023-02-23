@@ -12,7 +12,7 @@ import {
 } from "../../../utils/utils";
 import { Input } from "../../ui-components/InputComponent";
 import { Modal } from "../../ui-components/ModalComponent";
-import { Select } from "../../ui-components/SelectComponent";
+import { Select, Select2 } from "../../ui-components/SelectComponent";
 
 type Props = {
   open: boolean;
@@ -25,7 +25,7 @@ type Props = {
 function AddSearchModal({ open, onClose, id, data, index }: Props) {
   if (!open) return null;
   const [isDdl, setIsDdl] = useState(false);
-
+  console.log(data);
   const {
     register,
     unregister,
@@ -48,12 +48,10 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
     },
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control, // control props comes from useForm (optional: if you are using FormContext)
-      name: "items", // unique name for your Field Array
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: "items", // unique name for your Field Array
+  });
 
   const watchTypeDdl = watch("type");
   const watchIsFromUrlCheck = watch("isFromURL");
@@ -84,11 +82,12 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
       register("ddlType");
       register("isFromURL");
     }
-  }, [register, unregister, watchTypeDdl]);
+  }, [watchTypeDdl]);
 
   useEffect(() => {
     console.log("effect checkbox");
-    if (watchIsFromUrlCheck === undefined) return;
+    console.log(watchIsFromUrlCheck);
+    // if (watchIsFromUrlCheck === undefined) return;
     if (watchIsFromUrlCheck) {
       register("environment");
       register("path");
@@ -101,9 +100,10 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
       register("items");
       unregister("environment");
       unregister("path");
-      reset(transformToObjUndefined(["environment", "path"]));
+      // line below cause bug form not patched, idk why. if you uncomment this and still didn't know what happen, increase the counter by 1. COUNTER: 1
+      // reset(transformToObjUndefined(["environment", "path"]));
     }
-  }, [register, unregister, watchIsFromUrlCheck]);
+  }, [watchIsFromUrlCheck]);
 
   const getDataType = (type: string) => {
     if (type === "textbox" || type === "dropdown") return "text";
@@ -183,7 +183,7 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
                   <label className="form-label mb-2 inline-block capitalize text-gray-700">
                     Dropdown Type
                   </label>
-                  <Select
+                  <Select2
                     name="ddlType"
                     options={["all", "one", "none"]}
                     register={register}
@@ -236,7 +236,9 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
                       {fields.map((item, index) => (
                         <div key={item.id} className="grid grid-cols-12">
                           <div className="col-span-4 p-1">
-                            <label>Key</label>
+                            <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                              Key
+                            </label>
                             <input
                               className="
                                 form-control
@@ -259,7 +261,9 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
                             />
                           </div>
                           <div className="col-span-4 p-1">
-                            <label>Value</label>
+                            <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                              Value
+                            </label>
                             <input
                               className="
                                 form-control

@@ -1,3 +1,5 @@
+import { ActionPagingType } from "./ActionPagingType";
+
 export type PageType = {
   title: string;
   id: string;
@@ -72,8 +74,9 @@ export type HeaderPagingType = {
 export type BodyPagingType = {
   type: string;
   position: string;
-  property: string;
-  action?: [any];
+  property?: string;
+  actionType?: string;
+  action?: ActionPagingType[];
 };
 
 export type InputsGridViewType = {
