@@ -2,11 +2,22 @@ import { UseFormRegister } from "react-hook-form";
 
 type Props = {
   register: UseFormRegister<any>;
-  options: string[];
+  options?: string[];
+  keyval?: { key: string | undefined; value: string | undefined }[];
+  isRequired?: boolean;
   name: string;
+  onChange?: (val: string) => void;
 };
 
-export function Select({ register, options, name, ...rest }: Props) {
+export function Select({
+  register,
+  options,
+  keyval,
+  isRequired = false,
+  name,
+  onChange = () => null,
+  ...rest
+}: Props) {
   return (
     <select
       className="
@@ -28,11 +39,24 @@ export function Select({ register, options, name, ...rest }: Props) {
       "
       {...register(name)}
       {...rest}
+      required={isRequired}
+      onChange={(e) => onChange(e.target.value)}
     >
       <option value={""}>--Select One--</option>
-      {options.map((value) => (
-        <option value={value}>{value}</option>
-      ))}
+      {typeof options !== "undefined" ? (
+        <>
+          {options.map((value) => (
+            <option value={value}>{value}</option>
+          ))}
+        </>
+      ) : null}
+      {typeof keyval !== "undefined" ? (
+        <>
+          {keyval.map((item) => (
+            <option value={item.key}>{item.value}</option>
+          ))}
+        </>
+      ) : null}
     </select>
   );
 }

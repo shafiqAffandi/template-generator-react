@@ -6,7 +6,7 @@ import {
   HeaderPagingType,
   InputsGridViewType,
 } from "../../../types/Type";
-import { removeUndefinedProp } from "../../../utils/utils";
+import { matchesEl, removeUndefinedProp, toUpper } from "../../../utils/utils";
 import { Input } from "../../ui-components/InputComponent";
 import { Modal } from "../../ui-components/ModalComponent";
 import { Select } from "../../ui-components/SelectComponent";
@@ -26,10 +26,18 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
   if (!open) return null;
 
   const pageStore = usePageStore();
+  const searchData = pageStore.pages.find((el) => matchesEl(el, id))?.paging
+    ?.pagingInput.component;
+  const searchDataKeyVal = searchData?.map((item) => {
+    return {
+      key: item.id,
+      value: item.label,
+    };
+  });
   const {
     register,
     unregister,
-    control,
+    setValue,
     handleSubmit,
     reset,
     resetField,
@@ -57,23 +65,9 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
     if (!watchIsSortable) {
       unregister("name");
     }
-  }, [register, unregister, watchIsSortable]);
+  }, [watchIsSortable]);
 
   const onSubmit: SubmitHandler<InputsGridViewType> = (data) => {
-    // const comp: SearchComponentType = {
-    //   id: generateIdentifier(data.label, "search"),
-    //   type: data.type,
-    //   label: data.label,
-    //   name: data.name,
-    //   value: "",
-    //   placeholder: "",
-    //   datatype: getDataType(data.type),
-    //   isFromURL: data.isFromURL,
-    //   ddlType: data.ddlType,
-    //   items: data.items,
-    //   environment: data.environment,
-    //   path: data.path,
-    // };
     const compHeader: HeaderPagingType = {
       type: data.sortable ? "sort" : "label",
       label: data.label,
@@ -103,6 +97,16 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
     onClose();
   };
 
+  const copyFromHandler = (val: string) => {
+    const selectedData = searchData!.find((el) => el.id === val);
+    setValue("label", selectedData?.label ?? "");
+    setValue("name", selectedData?.name ?? "");
+    setValue(
+      "property",
+      toUpper(selectedData?.label ?? "").replace(/\s+/g, "")
+    );
+  };
+
   return (
     <>
       <Modal>
@@ -118,6 +122,22 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
         <p>form goes here</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="m-2 p-2 text-left">
+            {searchData!.length > 0 && typeof searchData !== "undefined" ? (
+              <>
+                <div className="mb-3 xl:w-96">
+                  <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                    Copy From
+                  </label>
+                  <Select
+                    name="copyfrom"
+                    keyval={searchDataKeyVal}
+                    register={register}
+                    onChange={copyFromHandler}
+                  />
+                </div>
+              </>
+            ) : null}
+
             <div className="mb-3 xl:w-96">
               <label className="form-label mb-2 inline-block capitalize text-gray-700">
                 Type
@@ -126,13 +146,14 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
                 name="type"
                 options={["text", "boolean"]}
                 register={register}
+                isRequired={true}
               />
             </div>
             <div className="mb-3 xl:w-96">
               <label className="form-label mb-2 inline-block capitalize text-gray-700">
                 Label
               </label>
-              <Input name="label" register={register} />
+              <Input name="label" register={register} isRequired={true} />
             </div>
             <div className="mb-3 xl:w-96">
               <label className="form-label mb-2 inline-block capitalize text-gray-700">

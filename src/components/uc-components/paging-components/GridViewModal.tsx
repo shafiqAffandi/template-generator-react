@@ -33,15 +33,8 @@ function GridViewModal({ id, open, onClose }: Props) {
       label: item.label,
     };
   });
-  // const dataProp = {
-  //   header: dataHeader,
-  //   body: dataBody,
-  // };
-
-  console.log(data);
 
   const onEdit = (index: number) => {
-    console.log("edit index", index);
     setComponentData(() => {
       return {
         header: dataHeader![index],
@@ -53,7 +46,6 @@ function GridViewModal({ id, open, onClose }: Props) {
   };
 
   const onRemove = (index: number) => {
-    console.log("remove index", index);
     pageStore.removeHeaderPaging(id, index);
     pageStore.removeBodyPaging(id, index);
   };

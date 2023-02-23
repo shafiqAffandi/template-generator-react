@@ -1,14 +1,16 @@
-import { UseFormRegister } from "react-hook-form";
+import { RegisterOptions, UseFormRegister } from "react-hook-form";
 
 type Props = {
   register: UseFormRegister<any>;
   name: string;
+  isRequired?: boolean;
 };
 
-export function Input({ register, name, ...rest }: Props) {
+export function Input({ register, name, isRequired = false, ...rest }: Props) {
   return (
-    <input
-      className="
+    <>
+      <input
+        className="
         form-control
         m-0
         block
@@ -25,8 +27,10 @@ export function Input({ register, name, ...rest }: Props) {
         ease-in-out
         focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
       "
-      {...register(name)}
-      {...rest}
-    />
+        {...register(name)}
+        {...rest}
+        required={isRequired}
+      />
+    </>
   );
 }
