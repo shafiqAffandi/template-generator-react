@@ -24,11 +24,27 @@ type Props = {
   id: string;
 };
 
+const setDefaultValue = (data: any) => {
+  if (Object.keys(data).length === 0) return data;
+  if (data.body.actionType === "edit") {
+    const _data = data.body.action[0] as ActionEditType;
+    return {
+      actionType: data?.body?.actionType,
+      icon: _data.icon,
+      label: data?.header?.label,
+      path: _data.path,
+      param: _data.param,
+    };
+  }
+};
+
 function AddActionModal({ open, onClose, index, data, id }: Props) {
   if (!open) return null;
-
+  console.log(data);
+  const _actionType =
+    Object.keys(data as any).length === 0 ? "" : data?.body?.actionType;
   const pageStore = usePageStore();
-  const [actionType, setActionType] = useState("");
+  const [actionType, setActionType] = useState(_actionType);
 
   const onClickCancel = () => {
     // reset();
@@ -45,7 +61,9 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
     resetField,
     watch,
     formState: { errors },
-  } = useForm<InputActionPagingType>();
+  } = useForm<InputActionPagingType>({
+    defaultValues: setDefaultValue(data),
+  });
 
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
@@ -54,48 +72,49 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
 
   const onSubmit: SubmitHandler<InputActionPagingType> = (data) => {
     console.log(data);
-    const actions: ActionPagingType[] = [];
+    // const actions: ActionPagingType[] = [];
 
-    const compHeader: HeaderPagingType = {
-      type: "label",
-      label: data.label,
-      position: "center",
-    };
-    console.log(compHeader);
+    // const compHeader: HeaderPagingType = {
+    //   type: "label",
+    //   label: data.label,
+    //   position: "center",
+    // };
+    // console.log(compHeader);
 
-    const compBody: BodyPagingType = {} as BodyPagingType;
+    // const compBody: BodyPagingType = {} as BodyPagingType;
 
-    if (data.actionType === "edit") {
-      const _data = data as ActionEditType;
-      const params = _data.param.map((item) => {
-        return { type: item.type, property: item.property };
-      });
-      const action: ActionPagingType = {
-        type: "edit",
-        path: _data.path,
-        param: params,
-        icon: "",
-      };
-      const _compBody = {
-        type: "action",
-        position: "center",
-        action: [action],
-      };
-      Object.assign(compBody, _compBody);
-    }
+    // if (data.actionType === "edit") {
+    //   const _data = data as ActionEditType;
+    //   const params = _data.param.map((item) => {
+    //     return { type: item.type, property: item.property };
+    //   });
+    //   const action: ActionPagingType = {
+    //     type: "edit",
+    //     path: _data.path,
+    //     param: params,
+    //     icon: "",
+    //   };
+    //   const _compBody = {
+    //     type: "action",
+    //     actionType: "edit",
+    //     position: "center",
+    //     action: [action],
+    //   };
+    //   Object.assign(compBody, _compBody);
+    // }
 
-    console.log(compBody);
+    // console.log(compBody);
 
-    if (index === -1) {
-      pageStore.addHeaderPaging(id, removeUndefinedProp(compHeader));
-      pageStore.addBodyPaging(id, removeUndefinedProp(compBody));
-    }
+    // if (index === -1) {
+    //   pageStore.addHeaderPaging(id, removeUndefinedProp(compHeader));
+    //   pageStore.addBodyPaging(id, removeUndefinedProp(compBody));
+    // }
     // if (index > -1) {
     //   pageStore.editHeaderPaging(id, index, removeUndefinedProp(compHeader));
     //   pageStore.editBodyPaging(id, index, removeUndefinedProp(compBody));
     // }
-    reset();
-    onClose();
+    // reset();
+    // onClose();
   };
 
   return (
@@ -143,12 +162,6 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
                   Icon
                 </label>
                 <Input name="icon" register={register} />
-              </div>
-              <div className="mb-3 xl:w-96">
-                <label className="form-label mb-2 inline-block capitalize text-gray-700">
-                  Param (should be an array)
-                </label>
-                <Input name="param" register={register} />
               </div>
               <>
                 <div className="flex">
