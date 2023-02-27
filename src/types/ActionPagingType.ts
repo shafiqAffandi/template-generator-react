@@ -63,4 +63,5 @@ export type ActionPagingType =
 export type InputActionPagingType = {
   actionType: string;
   label: string;
+  position: string;
 } & ActionPagingType;

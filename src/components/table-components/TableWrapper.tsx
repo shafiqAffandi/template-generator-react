@@ -1,15 +1,23 @@
+import { Children } from "react";
 import { actions, TableInstance } from "react-table";
 
 type Props = {
   tableInstance: TableInstance<any>;
-  onEdit: (index: number) => void;
-  onRemove: (index: number) => void;
+  onEdit?: (index: number) => void;
+  onRemove?: (index: number) => void;
+  onManageAction?: (index: number) => void;
+  children?: any;
 };
 
-function TableWrapper({ tableInstance, onEdit, onRemove }: Props) {
+function TableWrapper({
+  tableInstance,
+  onEdit = () => null,
+  onRemove = () => null,
+  onManageAction = () => null,
+  children,
+}: Props) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
-
   return (
     <div className="mt-2 flex flex-col">
       <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -83,18 +91,38 @@ function TableWrapper({ tableInstance, onEdit, onRemove }: Props) {
                         }
                         <td className="whitespace-nowrap py-4 px-6">
                           <div className="text-center">
-                            <button
-                              onClick={() => onEdit(index)}
-                              className="mx-1 rounded-md bg-slate-500 py-2 px-4 font-semibold text-white hover:bg-blue-600"
-                            >
-                              edit
-                            </button>
-                            <button
-                              onClick={() => onRemove(index)}
-                              className="mx-1 rounded-md bg-slate-500 p-2 font-semibold text-white hover:bg-red-600"
-                            >
-                              remove
-                            </button>
+                            {onEdit.length !== 0 ? (
+                              <>
+                                <button
+                                  onClick={() => onEdit(index)}
+                                  className="mx-1 rounded-md bg-slate-500 py-2 px-4 font-semibold text-white hover:bg-blue-600"
+                                >
+                                  edit
+                                </button>
+                              </>
+                            ) : null}
+                            {onRemove.length !== 0 ? (
+                              <>
+                                <button
+                                  onClick={() => onRemove(index)}
+                                  className="mx-1 rounded-md bg-slate-500 p-2 font-semibold text-white hover:bg-red-600"
+                                >
+                                  remove
+                                </button>
+                              </>
+                            ) : null}
+
+                            {row.original.type === "action" &&
+                            onManageAction.length !== 0 ? (
+                              <>
+                                <button
+                                  onClick={() => onManageAction(index)}
+                                  className="mx-1 rounded-md bg-slate-500 p-2 font-semibold text-white hover:bg-green-600"
+                                >
+                                  manage action
+                                </button>
+                              </>
+                            ) : null}
                           </div>
                         </td>
                       </tr>

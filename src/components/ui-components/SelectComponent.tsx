@@ -18,8 +18,6 @@ export function Select({
   name,
   onChange = () => null,
 }: Props) {
-  console.log(onChange);
-
   return (
     <>
       <Select1

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { ActionPagingType } from "../types/ActionPagingType";
 import {
   BodyPagingType,
   HeaderPagingType,
@@ -185,6 +186,47 @@ const removeBodyPaging = (
   return [...pages];
 };
 
+const addActionBodyPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  comp: ActionPagingType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging!.pagingInput.bodyList![idx].action!.push(
+    comp
+  );
+  return [...pages];
+};
+
+const editActionBodyPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  actionIdx: number,
+  comp: ActionPagingType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging!.pagingInput.bodyList![idx].action![
+    actionIdx
+  ] = comp;
+  return [...pages];
+};
+
+const removeActionBodyPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  actionIdx: number
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging?.pagingInput.bodyList![idx].action!.splice(
+    actionIdx,
+    1
+  );
+  return [...pages];
+};
+
 type Store = {
   pages: PageType[];
   newPage: PageType;
@@ -208,6 +250,22 @@ type Store = {
   addBodyPaging: (id: string, comp: BodyPagingType) => void;
   editBodyPaging: (id: string, idx: number, comp: BodyPagingType) => void;
   removeBodyPaging: (id: string, index: number) => void;
+  addActionBodyPaging: (
+    id: string,
+    index: number,
+    component: ActionPagingType
+  ) => void;
+  editActionBodyPaging: (
+    id: string,
+    index: number,
+    actionIndex: number,
+    component: ActionPagingType
+  ) => void;
+  removeActionBodyPaging: (
+    id: string,
+    index: number,
+    actionIndex: number
+  ) => void;
   // addGridViewComponent: (id: string, comp: GridViewComponentType[]) => void;
 };
 
@@ -319,6 +377,43 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: removeBodyPaging(state.pages, id, index),
+        }));
+      },
+      addActionBodyPaging: (
+        id: string,
+        index: number,
+        component: ActionPagingType
+      ) => {
+        set((state) => ({
+          ...state,
+          pages: addActionBodyPaging(state.pages, id, index, component),
+        }));
+      },
+      editActionBodyPaging: (
+        id: string,
+        index: number,
+        actionIndex: number,
+        component: ActionPagingType
+      ) => {
+        set((state) => ({
+          ...state,
+          pages: editActionBodyPaging(
+            state.pages,
+            id,
+            index,
+            actionIndex,
+            component
+          ),
+        }));
+      },
+      removeActionBodyPaging: (
+        id: string,
+        index: number,
+        actionIndex: number
+      ) => {
+        set((state) => ({
+          ...state,
+          pages: removeActionBodyPaging(state.pages, id, index, actionIndex),
         }));
       },
     }),

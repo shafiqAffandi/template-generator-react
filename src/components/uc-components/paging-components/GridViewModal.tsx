@@ -9,6 +9,7 @@ import usePageStore from "../../../stores/PageStore";
 import { matchesEl } from "../../../utils/utils";
 import { BodyPagingType, HeaderPagingType } from "../../../types/Type";
 import AddActionModal from "./AddActionModal";
+import ManageActionModal from "./ManageActionModal";
 
 type Props = {
   id: string;
@@ -21,6 +22,7 @@ function GridViewModal({ id, open, onClose }: Props) {
   const pageStore = usePageStore();
   const [isGridViewOpen, setIsGridViewOpen] = useState(false);
   const [isActionOpen, setIsActionOpen] = useState(false);
+  const [isManageActionOpen, setIsManageActionOpen] = useState(false);
   const [idxData, setIdxData] = useState(-1);
   const [componentData, setComponentData] = useState(
     {} as { header: HeaderPagingType; body: BodyPagingType }
@@ -53,6 +55,17 @@ function GridViewModal({ id, open, onClose }: Props) {
     setIsGridViewOpen(() => true);
   };
 
+  const onManageActionModal = (index: number) => {
+    setComponentData(() => {
+      return {
+        header: dataHeader![index],
+        body: dataBody![index],
+      };
+    });
+    setIdxData(() => index);
+    setIsManageActionOpen(() => true);
+  };
+
   const onRemove = (index: number) => {
     pageStore.removeHeaderPaging(id, index);
     pageStore.removeBodyPaging(id, index);
@@ -68,8 +81,17 @@ function GridViewModal({ id, open, onClose }: Props) {
   const onCloseActionModal = () => {
     //@ts-ignore
     setComponentData(() => {});
+    console.log(componentData);
     setIdxData(() => -1);
     setIsActionOpen(() => false);
+  };
+
+  const onCloseManageActionModal = () => {
+    //@ts-ignore
+    setComponentData(() => {});
+    console.log(componentData);
+    setIdxData(() => -1);
+    setIsManageActionOpen(() => false);
   };
 
   const columns = useMemo(
@@ -130,6 +152,7 @@ function GridViewModal({ id, open, onClose }: Props) {
             tableInstance={tableInstance}
             onEdit={onEdit}
             onRemove={onRemove}
+            onManageAction={onManageActionModal}
           />
         </div>
       </Modal>
@@ -146,6 +169,13 @@ function GridViewModal({ id, open, onClose }: Props) {
         data={componentData}
         index={idxData}
         onClose={() => onCloseActionModal()}
+      />
+      <ManageActionModal
+        open={isManageActionOpen}
+        id={id}
+        data={componentData}
+        index={idxData}
+        onClose={() => onCloseManageActionModal()}
       />
     </>
   );

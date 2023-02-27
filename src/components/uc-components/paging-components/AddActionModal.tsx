@@ -26,28 +26,33 @@ type Props = {
 
 const setDefaultValue = (data: any) => {
   if (Object.keys(data).length === 0) return data;
-  if (data.body.actionType === "edit") {
-    const _data = data.body.action[0] as ActionEditType;
-    return {
-      actionType: data?.body?.actionType,
-      icon: _data.icon,
-      label: data?.header?.label,
-      path: _data.path,
-      param: _data.param,
-    };
-  }
+  return {
+    label: data?.header?.label,
+    position: data?.header?.position,
+  };
+  // if (data.body.actionType === "edit") {
+  //   const _data = data.body.action[0] as ActionEditType;
+  //   return {
+  //     actionType: data?.body?.actionType,
+  //     icon: _data.icon,
+  //     label: data?.header?.label,
+  //     path: _data.path,
+  //     param: _data.param,
+  //   };
+  // }
 };
 
 function AddActionModal({ open, onClose, index, data, id }: Props) {
   if (!open) return null;
   console.log(data);
+  if (typeof data === "undefined") data = {} as any;
   const _actionType =
     Object.keys(data as any).length === 0 ? "" : data?.body?.actionType;
   const pageStore = usePageStore();
   const [actionType, setActionType] = useState(_actionType);
 
   const onClickCancel = () => {
-    // reset();
+    reset();
     onClose();
   };
 
@@ -74,12 +79,19 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
     console.log(data);
     // const actions: ActionPagingType[] = [];
 
-    // const compHeader: HeaderPagingType = {
-    //   type: "label",
-    //   label: data.label,
-    //   position: "center",
-    // };
-    // console.log(compHeader);
+    const compHeader: HeaderPagingType = {
+      type: "label",
+      label: data.label,
+      position: data.position,
+    };
+    console.log(compHeader);
+
+    const compBody = {
+      type: "action",
+      position: data.position,
+      action: [],
+    };
+    console.log(compBody);
 
     // const compBody: BodyPagingType = {} as BodyPagingType;
 
@@ -105,16 +117,16 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
 
     // console.log(compBody);
 
-    // if (index === -1) {
-    //   pageStore.addHeaderPaging(id, removeUndefinedProp(compHeader));
-    //   pageStore.addBodyPaging(id, removeUndefinedProp(compBody));
-    // }
-    // if (index > -1) {
-    //   pageStore.editHeaderPaging(id, index, removeUndefinedProp(compHeader));
-    //   pageStore.editBodyPaging(id, index, removeUndefinedProp(compBody));
-    // }
-    // reset();
-    // onClose();
+    if (index === -1) {
+      pageStore.addHeaderPaging(id, removeUndefinedProp(compHeader));
+      pageStore.addBodyPaging(id, removeUndefinedProp(compBody));
+    }
+    if (index > -1) {
+      pageStore.editHeaderPaging(id, index, removeUndefinedProp(compHeader));
+      pageStore.editBodyPaging(id, index, removeUndefinedProp(compBody));
+    }
+    reset();
+    onClose();
   };
 
   return (
@@ -139,6 +151,16 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
           </div>
           <div className="mb-3 xl:w-96">
             <label className="form-label mb-2 inline-block capitalize text-gray-700">
+              Position
+            </label>
+            <Select
+              name="position"
+              register={register}
+              options={["left", "center", "right"]}
+            />
+          </div>
+          {/* <div className="mb-3 xl:w-96">
+            <label className="form-label mb-2 inline-block capitalize text-gray-700">
               Action Type
             </label>
             <Select
@@ -147,8 +169,8 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
               options={["edit", "delete", "callback", "switch"]}
               onChange={(val) => setActionType(() => val)}
             />
-          </div>
-          {actionType === "edit" ? (
+          </div> */}
+          {/* {actionType === "edit" ? (
             <>
               <p>edit</p>
               <div className="mb-3 xl:w-96">
@@ -280,7 +302,7 @@ function AddActionModal({ open, onClose, index, data, id }: Props) {
                 <Input name="case" register={register} />
               </div>
             </>
-          ) : null}
+          ) : null} */}
         </div>
         <div className="text-center">
           <input
