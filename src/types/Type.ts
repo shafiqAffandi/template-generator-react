@@ -47,6 +47,8 @@ type SearchComponentDdlType = SearchComponentTypeBase & {
   environment?: string;
   items?: { key: string; value: string }[];
   path?: string;
+  criteriaPropName?: string;
+  criteriaPropValue?: string;
 };
 
 export type SearchComponentType =
@@ -62,6 +64,8 @@ export type InputsSearchComponentType = {
   environment: string;
   path: string;
   items: { key: string; value: string }[];
+  criteriaPropName: string;
+  criteriaPropValue: string;
 };
 
 export type HeaderPagingType = {

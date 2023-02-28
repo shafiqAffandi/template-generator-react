@@ -39,8 +39,6 @@ function GridViewModal({ id, open, onClose }: Props) {
   });
 
   const onEdit = (index: number) => {
-    console.log(index);
-    console.log(dataBody![index]);
     setComponentData(() => {
       return {
         header: dataHeader![index],
@@ -81,7 +79,6 @@ function GridViewModal({ id, open, onClose }: Props) {
   const onCloseActionModal = () => {
     //@ts-ignore
     setComponentData(() => {});
-    console.log(componentData);
     setIdxData(() => -1);
     setIsActionOpen(() => false);
   };
@@ -89,7 +86,6 @@ function GridViewModal({ id, open, onClose }: Props) {
   const onCloseManageActionModal = () => {
     //@ts-ignore
     setComponentData(() => {});
-    console.log(componentData);
     setIdxData(() => -1);
     setIsManageActionOpen(() => false);
   };

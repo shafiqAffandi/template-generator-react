@@ -1,0 +1,16 @@
+export const RestrictionConstant = [
+  { key: "Between", value: "Between" },
+  { key: "Like", value: "Like" },
+  { key: "Eq", value: "Equal" },
+  { key: "NEQ", value: "Not Equal" },
+  { key: "GT", value: "Greater Than" },
+  { key: "GTE", value: "Greater Than Equal" },
+  { key: "LT", value: "Less Than" },
+  { key: "LTE", value: "Less Than Equal" },
+  { key: "IN", value: "In" },
+  { key: "NotIn", value: "Not In" },
+  { key: "Or", value: "Or" },
+  { key: "OrNeq", value: "Or Not Equal" },
+  { key: "isnull", value: "Is Null" },
+  { key: "isnotnull", value: "Is Not Null" },
+];

@@ -25,14 +25,12 @@ type Props = {
 function AddSearchModal({ open, onClose, id, data, index }: Props) {
   if (!open) return null;
   const [isDdl, setIsDdl] = useState(false);
-  console.log(data);
   const {
     register,
     unregister,
     control,
     handleSubmit,
     reset,
-    resetField,
     watch,
     formState: { errors },
   } = useForm<InputsSearchComponentType>({
@@ -58,7 +56,6 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
   const pageStore = usePageStore();
 
   useEffect(() => {
-    console.log("effect ddl");
     if (watchTypeDdl === "textbox" || watchTypeDdl === "numeric") {
       setIsDdl(() => false);
       register("label");
@@ -68,6 +65,8 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
       unregister("isFromURL");
       unregister("items");
       unregister("path");
+      unregister("criteriaPropName");
+      unregister("criteriaPropValue");
       fields.forEach((el, idx) => {
         remove(idx);
       });
@@ -85,12 +84,12 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
   }, [watchTypeDdl]);
 
   useEffect(() => {
-    console.log("effect checkbox");
-    console.log(watchIsFromUrlCheck);
     // if (watchIsFromUrlCheck === undefined) return;
     if (watchIsFromUrlCheck) {
       register("environment");
       register("path");
+      register("criteriaPropName");
+      register("criteriaPropValue");
       unregister("items");
       fields.forEach((el, idx) => {
         remove(idx);
@@ -100,6 +99,8 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
       register("items");
       unregister("environment");
       unregister("path");
+      unregister("criteriaPropName");
+      unregister("criteriaPropValue");
       // line below cause bug form not patched, idk why. if you uncomment this and still didn't know what happen, increase the counter by 1. COUNTER: 1
       // reset(transformToObjUndefined(["environment", "path"]));
     }
@@ -124,6 +125,8 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
       items: data.items,
       environment: data.environment,
       path: data.path,
+      criteriaPropName: data.criteriaPropName,
+      criteriaPropValue: data.criteriaPropValue,
     };
     if (index === -1) {
       pageStore.addSearchComponent(id, removeUndefinedProp(comp));
@@ -212,6 +215,18 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
                         API Path
                       </label>
                       <Input name="path" register={register} />
+                    </div>
+                    <div className="mb-3 xl:w-96">
+                      <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                        Criteria Property Name
+                      </label>
+                      <Input name="criteriaPropName" register={register} />
+                    </div>
+                    <div className="mb-3 xl:w-96">
+                      <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                        Criteria Property Value
+                      </label>
+                      <Input name="criteriaPropValue" register={register} />
                     </div>
                   </>
                 ) : (

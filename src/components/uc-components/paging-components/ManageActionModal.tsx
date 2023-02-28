@@ -23,8 +23,6 @@ function ManageActionModal({ open, onClose, index, data, id }: Props) {
   const [idxData, setIdxData] = useState(-1);
   const pageStore = usePageStore();
 
-  console.log(data);
-
   const columns = useMemo(
     () => [
       {
@@ -52,8 +50,6 @@ function ManageActionModal({ open, onClose, index, data, id }: Props) {
   };
 
   const onEdit = (actionIdx: number) => {
-    console.log("edit");
-    console.log(actionIdx);
     setIdxData(() => actionIdx);
     setIsModalOpen(() => true);
   };

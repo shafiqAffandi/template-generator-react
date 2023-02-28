@@ -4,10 +4,17 @@ import TypeSwitchDetailComponent from "./TypeSwitchDetailComponent";
 
 type Props = {
   register: any;
+  unregister: any;
   control: any;
+  watch: any;
 };
 
-function ActionTypeSwitchComponent({ register, control }: Props) {
+function ActionTypeSwitchComponent({
+  register,
+  unregister,
+  control,
+  watch,
+}: Props) {
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "case", // unique name for your Field Array
@@ -33,15 +40,18 @@ function ActionTypeSwitchComponent({ register, control }: Props) {
       <ul className="w-full">
         {fields.map((item, index) => (
           <div key={item.id} className="grid grid-cols-12">
-            <div className="col-span-4 p-1">
+            <div className="col-span-10 p-1">
               <TypeSwitchDetailComponent
                 register={register}
+                unregister={unregister}
                 control={control}
+                watch={watch}
+                nestedIdx={index}
               />
             </div>
-            <div className="flex flex-col">
+            <div className="col-span-2 flex flex-col">
               <button
-                className="mt-auto inline-block rounded bg-slate-600 p-2 capitalize text-white shadow-lg transition duration-100 ease-in-out hover:bg-red-600"
+                className="mb-1 mt-auto inline-block rounded bg-slate-600 p-2 capitalize text-white shadow-lg transition duration-100 ease-in-out hover:bg-red-600"
                 type="button"
                 onClick={() => remove(index)}
               >

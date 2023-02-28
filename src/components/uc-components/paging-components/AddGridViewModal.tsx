@@ -57,7 +57,6 @@ function AddGridViewModal({ open, onClose, index, data, id }: Props) {
   const watchIsSortable = watch("sortable");
 
   useEffect(() => {
-    console.log("effect sortable");
     if (watchIsSortable === undefined) return;
     if (watchIsSortable) {
       register("name");

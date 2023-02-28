@@ -4,12 +4,14 @@ import { Input } from "../../../ui-components/InputComponent";
 type Props = {
   register: any;
   control: any;
+  arrName?: string;
 };
 
-function ActionTypeEditComponent({ register, control }: Props) {
+function ActionTypeEditComponent({ register, control, arrName = "" }: Props) {
+  if (arrName !== "") arrName = `${arrName}.`;
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "param", // unique name for your Field Array
+    name: `${arrName}param`, // unique name for your Field Array
   });
 
   return (
@@ -18,13 +20,13 @@ function ActionTypeEditComponent({ register, control }: Props) {
         <label className="form-label mb-2 inline-block capitalize text-gray-700">
           Path
         </label>
-        <Input name="path" register={register} />
+        <Input name={`${arrName}` + "path"} register={register} />
       </div>
       <div className="mb-3 xl:w-96">
         <label className="form-label mb-2 inline-block capitalize text-gray-700">
           Icon
         </label>
-        <Input name="icon" register={register} />
+        <Input name={`${arrName}` + "icon"} register={register} />
       </div>
       <>
         <div className="flex">
@@ -68,7 +70,7 @@ function ActionTypeEditComponent({ register, control }: Props) {
                       ease-in-out
                       focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
                     "
-                  {...register(`param.${index}.type` as const)}
+                  {...register(`${arrName}param.${index}.type` as const)}
                 />
               </div>
               <div className="col-span-4 p-1">
@@ -93,7 +95,7 @@ function ActionTypeEditComponent({ register, control }: Props) {
                       ease-in-out
                       focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
                     "
-                  {...register(`param.${index}.property` as const)}
+                  {...register(`${arrName}param.${index}.property` as const)}
                 />
               </div>
               <div className="flex flex-col">

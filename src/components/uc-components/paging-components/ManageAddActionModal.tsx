@@ -6,6 +6,7 @@ import {
   ActionDeleteType,
   ActionEditType,
   ActionPagingType,
+  ActionSwitchType,
 } from "../../../types/ActionPagingType";
 import { BodyPagingType } from "../../../types/Type";
 import { removeUndefinedProp } from "../../../utils/utils";
@@ -30,7 +31,6 @@ const setDefaultValue = (
   data: BodyPagingType,
   idx: number
 ): ActionPagingType => {
-  // console.log(data.action![idx]);
   if (idx === -1) return {} as any;
   if (data.action![idx].type === "edit") {
     const _data = data.action![idx] as ActionEditType;
@@ -55,6 +55,11 @@ const setDefaultValue = (
       key: _data.key,
     };
   }
+
+  if (data.action![idx].type === "switch") {
+    return { ...data.action![idx] };
+  }
+
   return {} as any;
 };
 
@@ -141,53 +146,58 @@ function ManageAddActionModal({
 
   const onSubmit: SubmitHandler<any> = (data) => {
     const action: ActionPagingType = {} as any;
-    console.log(data);
 
-    // if (data.type === "edit") {
-    //   const _data = data as ActionEditType;
-    //   const params = _data.param.map((item) => {
-    //     return { type: item.type, property: item.property };
-    //   });
-    //   const _action: ActionPagingType = {
-    //     type: _data.type,
-    //     path: _data.path,
-    //     param: params,
-    //     icon: _data.icon,
-    //   };
-    //   Object.assign(action, _action);
-    // }
+    if (data.type === "edit") {
+      const _data = data as ActionEditType;
+      const params = _data.param.map((item) => {
+        return { type: item.type, property: item.property };
+      });
+      const _action: ActionPagingType = {
+        type: _data.type,
+        path: _data.path,
+        param: params,
+        icon: _data.icon,
+      };
+      Object.assign(action, _action);
+    }
 
-    // if (data.type === "delete") {
-    //   const _data = data as ActionDeleteType;
-    //   const _action: ActionPagingType = {
-    //     type: _data.type,
-    //     property: _data.property,
-    //   };
-    //   Object.assign(action, _action);
-    // }
+    if (data.type === "delete") {
+      const _data = data as ActionDeleteType;
+      const _action: ActionPagingType = {
+        type: _data.type,
+        property: _data.property,
+      };
+      Object.assign(action, _action);
+    }
 
-    // if (data.type === "callback") {
-    //   const _data = data as ActionCallbackType;
-    //   const _action: ActionPagingType = {
-    //     type: _data.type,
-    //     key: _data.key,
-    //   };
-    //   Object.assign(action, _action);
-    // }
+    if (data.type === "callback") {
+      const _data = data as ActionCallbackType;
+      const _action: ActionPagingType = {
+        type: _data.type,
+        key: _data.key,
+      };
+      Object.assign(action, _action);
+    }
 
-    // if (idxData === -1) {
-    //   pageStore.addActionBodyPaging(id, index, removeUndefinedProp(action));
-    // }
-    // if (idxData > -1) {
-    //   pageStore.editActionBodyPaging(
-    //     id,
-    //     index,
-    //     idxData,
-    //     removeUndefinedProp(action)
-    //   );
-    // }
-    // reset();
-    // onClose();
+    if (data.type === "switch") {
+      const _data = data as ActionSwitchType;
+      const _action: ActionSwitchType = { ..._data };
+      Object.assign(action, _action);
+    }
+
+    if (idxData === -1) {
+      pageStore.addActionBodyPaging(id, index, removeUndefinedProp(action));
+    }
+    if (idxData > -1) {
+      pageStore.editActionBodyPaging(
+        id,
+        index,
+        idxData,
+        removeUndefinedProp(action)
+      );
+    }
+    reset();
+    onClose();
   };
 
   return (
@@ -224,7 +234,12 @@ function ManageAddActionModal({
             <ActionTypeCallbackComponent register={register} />
           ) : null}
           {watchTypeDdl === "switch" ? (
-            <ActionTypeSwitchComponent register={register} control={control} />
+            <ActionTypeSwitchComponent
+              register={register}
+              unregister={unregister}
+              control={control}
+              watch={watch}
+            />
           ) : null}
         </div>
         <div className="text-center">
