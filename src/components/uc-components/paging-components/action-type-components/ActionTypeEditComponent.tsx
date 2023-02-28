@@ -1,27 +1,55 @@
+import { useEffect } from "react";
 import { useFieldArray } from "react-hook-form";
 import { Input } from "../../../ui-components/InputComponent";
 
 type Props = {
   register: any;
   control: any;
+  watch: any;
   arrName?: string;
 };
 
-function ActionTypeEditComponent({ register, control, arrName = "" }: Props) {
+function ActionTypeEditComponent({
+  register,
+  control,
+  watch,
+  arrName = "",
+}: Props) {
   if (arrName !== "") arrName = `${arrName}.`;
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: `${arrName}param`, // unique name for your Field Array
   });
 
+  const watchTypeSelfCustom = watch(`${arrName}isSelfCustom`);
+
+  useEffect(() => {
+    if (watchTypeSelfCustom === undefined) return;
+    console.log(watchTypeSelfCustom);
+  }, [watchTypeSelfCustom]);
+
   return (
     <>
-      <div className="mb-3 xl:w-96">
-        <label className="form-label mb-2 inline-block capitalize text-gray-700">
-          Path
-        </label>
-        <Input name={`${arrName}` + "path"} register={register} />
+      <div className="mt-2 grid grid-cols-3 text-left">
+        <label className="col-span-1">Self Custom?</label>
+        <div className="col-span-2 text-left">
+          <input
+            type={"checkbox"}
+            {...register(`${arrName}` + "isSelfCustom")}
+          />
+        </div>
       </div>
+      {watchTypeSelfCustom ? (
+        <>
+          <div className="mb-3 xl:w-96">
+            <label className="form-label mb-2 inline-block capitalize text-gray-700">
+              Path
+            </label>
+            <Input name={`${arrName}` + "path"} register={register} />
+          </div>
+        </>
+      ) : null}
+
       <div className="mb-3 xl:w-96">
         <label className="form-label mb-2 inline-block capitalize text-gray-700">
           Icon

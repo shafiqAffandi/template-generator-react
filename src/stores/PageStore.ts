@@ -8,7 +8,7 @@ import {
   PagingInputType,
   SearchComponentType,
 } from "../types/Type";
-import { generateIdentifier, matchesEl, toUpper } from "../utils/utils";
+import { matchesEl, toUpper } from "../utils/utils";
 
 const LOCAL_KEY = "page_template";
 
@@ -29,7 +29,6 @@ const editPage = (
   id: string
 ): PageType[] => {
   const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
-  pages[affectedPageIndex].id = toUpper(page.title).replace(/\s+/g, "");
   pages[affectedPageIndex].title = page.title;
   pages[affectedPageIndex].addButton = page.addButton;
   pages[affectedPageIndex].backButton = page.backButton;

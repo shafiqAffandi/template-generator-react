@@ -127,6 +127,7 @@ function TypeSwitchDetailComponent({
         <ActionTypeEditComponent
           register={register}
           control={control}
+          watch={watch}
           arrName={`case[${nestedIdx}].result`}
         />
       ) : null}

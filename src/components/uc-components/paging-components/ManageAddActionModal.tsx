@@ -78,10 +78,8 @@ function ManageAddActionModal({
     register,
     control,
     unregister,
-    setValue,
     handleSubmit,
     reset,
-    resetField,
     watch,
     formState: { errors },
   } = useForm<ActionPagingType>({
@@ -149,12 +147,17 @@ function ManageAddActionModal({
 
     if (data.type === "edit") {
       const _data = data as ActionEditType;
+      const path = data.isSelfCustom ? _data.path : `/BREAD/${id}`;
       const params = _data.param.map((item) => {
         return { type: item.type, property: item.property };
       });
+      if (!data.isSelfCustom) {
+        params.push({ type: "mode", property: "edit" });
+        params.push({ type: "view", property: "form" });
+      }
       const _action: ActionPagingType = {
         type: _data.type,
-        path: _data.path,
+        path: path,
         param: params,
         icon: _data.icon,
       };
@@ -225,7 +228,11 @@ function ManageAddActionModal({
             />
           </div>
           {watchTypeDdl === "edit" ? (
-            <ActionTypeEditComponent register={register} control={control} />
+            <ActionTypeEditComponent
+              register={register}
+              control={control}
+              watch={watch}
+            />
           ) : null}
           {watchTypeDdl === "delete" ? (
             <ActionTypeDeleteComponent register={register} />
