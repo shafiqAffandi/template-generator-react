@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { ActionPagingType } from "../types/ActionPagingType";
 import {
   BodyPagingType,
+  CriteriaPaging,
   HeaderPagingType,
   PageType,
   PagingInputType,
@@ -227,6 +228,42 @@ const removeActionBodyPaging = (
   return [...pages];
 };
 
+const addCriteriaPaging = (
+  pages: PageType[],
+  id: string,
+  criteria: CriteriaPaging
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  if (pages[affectedPageIndex].paging?.criteria === undefined)
+    return [...pages];
+  pages[affectedPageIndex].paging?.criteria?.push(criteria);
+  return [...pages];
+};
+
+const editCriteriaPaging = (
+  pages: PageType[],
+  id: string,
+  idx: number,
+  criteria: CriteriaPaging
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  const updatedItems = pages[affectedPageIndex].paging?.criteria?.map(
+    (el, index) => (index === idx ? criteria : el)
+  );
+  pages[affectedPageIndex].paging!.criteria = updatedItems;
+  return [...pages];
+};
+
+const removeCriteriaPaging = (
+  pages: PageType[],
+  id: string,
+  index: number
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].paging?.criteria?.splice(index, 1);
+  return [...pages];
+};
+
 type Store = {
   pages: PageType[];
   newPage: PageType;
@@ -266,7 +303,13 @@ type Store = {
     index: number,
     actionIndex: number
   ) => void;
-  // addGridViewComponent: (id: string, comp: GridViewComponentType[]) => void;
+  addCriteriaPaging: (id: string, criteria: CriteriaPaging) => void;
+  editCriteriaPaging: (
+    id: string,
+    idx: number,
+    criteria: CriteriaPaging
+  ) => void;
+  removeCriteriaPaging: (id: string, index: number) => void;
 };
 
 const usePageStore = create<Store>()(
@@ -414,6 +457,28 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: removeActionBodyPaging(state.pages, id, index, actionIndex),
+        }));
+      },
+      addCriteriaPaging: (id: string, criteria: CriteriaPaging) => {
+        set((state) => ({
+          ...state,
+          pages: addCriteriaPaging(state.pages, id, criteria),
+        }));
+      },
+      editCriteriaPaging: (
+        id: string,
+        idx: number,
+        criteria: CriteriaPaging
+      ) => {
+        set((state) => ({
+          ...state,
+          pages: editCriteriaPaging(state.pages, id, idx, criteria),
+        }));
+      },
+      removeCriteriaPaging: (id: string, index: number) => {
+        set((state) => ({
+          ...state,
+          pages: removeCriteriaPaging(state.pages, id, index),
         }));
       },
     }),

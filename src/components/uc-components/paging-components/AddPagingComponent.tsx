@@ -46,6 +46,7 @@ function AddPagingComponent({ identifier, onClose, data }: Props) {
         headerList: [],
         bodyList: [],
       },
+      criteria: [],
     };
     if (data === undefined) {
       pageStore.addPaging(identifier, comp);
