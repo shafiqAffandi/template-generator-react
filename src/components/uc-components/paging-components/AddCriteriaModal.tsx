@@ -15,7 +15,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   index: number;
-  data?: any;
+  data?: CriteriaPaging;
   id: string;
 };
 
@@ -27,7 +27,7 @@ function AddCriteriaModal({ open, onClose, id, data, index }: Props) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<any>({
+  } = useForm<CriteriaPaging>({
     defaultValues: { ...data },
   });
 
@@ -36,7 +36,7 @@ function AddCriteriaModal({ open, onClose, id, data, index }: Props) {
     onClose();
   };
 
-  const onSubmit: SubmitHandler<any> = (critData) => {
+  const onSubmit: SubmitHandler<CriteriaPaging> = (critData) => {
     const criteria: CriteriaPaging = { ...critData };
     if (index === -1) {
       pageStore.addCriteriaPaging(id, removeUndefinedProp(criteria));
