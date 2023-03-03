@@ -125,9 +125,7 @@ function setDefaultValue(data: any, idx: number) {
   }
 
   if (data.formInput[idx].Type === "LOOKUP") {
-    // need further config
     const _data = data.formInput[idx] as FormInputTypeLookup;
-    console.log(_data);
     return {
       Type: _data.Type,
       Label: _data.Label,

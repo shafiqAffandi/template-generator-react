@@ -4,6 +4,12 @@ import PageModal from "./PageModal";
 
 function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const pageStore = usePageStore();
+
+  const onSaveHandler = () => {
+    console.log("data saved!");
+    console.log(JSON.stringify(pageStore.pages));
+  };
 
   return (
     <>
@@ -20,7 +26,18 @@ function Navbar() {
           >
             <ul className="flex list-none flex-col lg:ml-auto lg:flex-row">
               <li className="nav-item">
-                <div className="flex justify-center space-x-2">
+                <div className="mx-2 flex justify-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => onSaveHandler()}
+                    className="inline-block rounded bg-teal-500 px-6 py-2.5 text-xs font-bold uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-slate-700 hover:text-white hover:shadow-lg"
+                  >
+                    Save
+                  </button>
+                </div>
+              </li>
+              <li className="nav-item">
+                <div className="mx-2 flex justify-center space-x-2">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}

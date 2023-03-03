@@ -17,7 +17,7 @@ function Page({ children, onRemove }: Props) {
   const [openPageModal, setOpenPageModal] = useState(false);
   const pageStore = usePageStore();
   const data = pageStore.pages.find((item) => item.id === children.id);
-
+  console.log(data?.addButton);
   return (
     <>
       <div className="ml-48 mr-48 mt-12 rounded-lg bg-white p-8">

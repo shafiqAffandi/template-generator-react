@@ -21,6 +21,7 @@ const addPage = (pages: PageType[], page: PageType): PageType[] => [
     title: page.title,
     id: toUpper(page.title).replace(/\s+/g, ""),
     addButton: page.addButton,
+    addLink: page.addLink,
     backButton: page.backButton,
     paging: page?.paging,
   },
@@ -33,6 +34,7 @@ const editPage = (
 ): PageType[] => {
   const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
   pages[affectedPageIndex].title = page.title;
+  pages[affectedPageIndex].addLink = page.addLink;
   pages[affectedPageIndex].addButton = page.addButton;
   pages[affectedPageIndex].backButton = page.backButton;
   return [...pages];
@@ -346,7 +348,7 @@ type Store = {
   newPage: PageType;
   addPage: () => void;
   editPage: (id: string) => void;
-  setNewPage: (title: string, addButton: boolean, backButton: boolean) => void;
+  setNewPage: (title: string, addButton: boolean, addLink: string, backButton: boolean) => void;
   removePage: (id: string) => void;
   addPaging: (id: string, comp: PagingInputType) => void;
   editPaging: (id: string, comp: PagingInputType) => void;
@@ -400,12 +402,12 @@ const usePageStore = create<Store>()(
   persist(
     (set) => ({
       pages: [],
-      newPage: { title: "", id: "", addButton: false, backButton: false },
+      newPage: { title: "", id: "", addButton: false, addLink: "", backButton: false },
       addPage: () => {
         set((state) => ({
           ...state,
           pages: addPage(state.pages, state.newPage),
-          newPage: { title: "", id: "", addButton: false, backButton: false },
+          newPage: { title: "", id: "", addButton: false, addLink: "", backButton: false },
         }));
       },
       editPage: (id: string) => {
@@ -414,10 +416,10 @@ const usePageStore = create<Store>()(
           pages: editPage(state.pages, state.newPage, id),
         }));
       },
-      setNewPage: (title: string, addButton: boolean, backButton: boolean) => {
+      setNewPage: (title: string, addButton: boolean, addLink: string, backButton: boolean) => {
         set((state) => ({
           ...state,
-          newPage: { title, id: title, addButton, backButton },
+          newPage: { title, id: title, addButton, addLink, backButton },
         }));
       },
       removePage: (id: string) => {

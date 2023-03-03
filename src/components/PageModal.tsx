@@ -1,5 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import usePageStore from "../stores/PageStore";
+import { Input } from "./ui-components/InputComponent";
 import { Modal } from "./ui-components/ModalComponent";
 
 type Props = {
@@ -18,6 +19,7 @@ type Inputs = {
   title: string;
   addButton: boolean;
   backButton: boolean;
+  addLink: string;
 };
 
 function PageModal({ open, children, onClose, id }: Props) {
@@ -30,6 +32,7 @@ function PageModal({ open, children, onClose, id }: Props) {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues:
@@ -39,21 +42,24 @@ function PageModal({ open, children, onClose, id }: Props) {
             title: data?.title,
             addButton: data?.addButton,
             backButton: data?.backButton,
+            addLink: data?.addLink,
           },
   });
 
+  const watchAddButton = watch("addButton");
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    pageStore.setNewPage(data.title, data.addButton, data.backButton);
+    const addLink = data.addButton ? data.addLink : "";
+    pageStore.setNewPage(data.title, data.addButton, addLink, data.backButton);
     if (!id) {
       pageStore.addPage();
-      reset();
-      onClose();
     }
     if (id) {
       pageStore.editPage(id);
-      reset();
-      onClose();
     }
+
+    reset();
+    onClose();
   };
 
   return (
@@ -74,29 +80,7 @@ function PageModal({ open, children, onClose, id }: Props) {
               <label className="form-label mb-2 inline-block capitalize text-gray-700">
                 title
               </label>
-              <input
-                type="text"
-                {...register("title")}
-                required
-                className="
-                    form-control
-                    m-0
-                    block
-                    w-full
-                    rounded
-                    border
-                    border-solid
-                    border-gray-300
-                    bg-white bg-clip-padding
-                    px-3 py-1.5 text-base
-                    font-normal
-                    text-gray-700
-                    transition
-                    ease-in-out
-                    focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
-                  "
-                id="titleId"
-              />
+              <Input register={register} name="title" />
             </div>
             <div className="mt-2 grid grid-cols-3 text-left">
               <label className="col-span-1">Add Button</label>
@@ -104,6 +88,16 @@ function PageModal({ open, children, onClose, id }: Props) {
                 <input type={"checkbox"} {...register("addButton")} />
               </div>
             </div>
+            {watchAddButton ? (
+              <>
+                <div className="mb-3 xl:w-96">
+                  <label className="form-label mb-2 inline-block capitalize text-gray-700">
+                    Add Link
+                  </label>
+                  <Input register={register} name="addLink" />
+                </div>
+              </>
+            ) : null}
             <div className="mt-2 grid grid-cols-3 text-left">
               <label className="col-span-1">Back Button</label>
               <div className="col-span-2 text-left">

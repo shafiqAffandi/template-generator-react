@@ -147,7 +147,8 @@ function ManageAddActionModal({
 
     if (data.type === "edit") {
       const _data = data as ActionEditType;
-      const path = data.isSelfCustom ? _data.path : `/BREAD/${id}`;
+      const pageAddLink = pageStore.pages[index].addLink;
+      const path = data.isSelfCustom ? _data.path : `/BREAD/${pageAddLink}`;
       const params = _data.param.map((item) => {
         return { type: item.type, property: item.property };
       });

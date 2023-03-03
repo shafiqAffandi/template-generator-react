@@ -19,7 +19,11 @@ type Props = {
 };
 
 const setDefaultValue = (data: any) => {
-  if (Object.keys(data).length === 0) return data;
+  if (Object.keys(data).length === 0)
+    return {
+      label: "action",
+      position: "center",
+    };
   return {
     label: data?.header?.label,
     position: data?.header?.position,

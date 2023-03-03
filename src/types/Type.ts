@@ -5,6 +5,7 @@ export type PageType = {
   title: string;
   id: string;
   addButton: boolean;
+  addLink: string;
   backButton: boolean;
   paging?: PagingInputType;
   forms?: FormComponentType;
