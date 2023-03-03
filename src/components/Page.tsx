@@ -2,7 +2,9 @@ import { useState } from "react";
 import usePageStore from "../stores/PageStore";
 import { PageType } from "../types/Type";
 import ComponentModal from "./ComponentModal";
+import PageComponent from "./PageComponent";
 import PageModal from "./PageModal";
+import FormComponent from "./uc-components/form-component/FormComponent";
 import PagingComponent from "./uc-components/paging-components/PagingComponent";
 
 type Props = {
@@ -49,19 +51,7 @@ function Page({ children, onRemove }: Props) {
           </div>
         </div>
         <p>{JSON.stringify(data)}</p>
-
-        {pageStore.pages.map((page) => {
-          if (page.id !== children.id) return null;
-          if (page.paging !== undefined)
-            return (
-              <PagingComponent
-                key={children.id + "Paging"}
-                id={children.id}
-                data={page.paging}
-              />
-            );
-          return null;
-        })}
+        <PageComponent id={children.id} />
       </div>
       <ComponentModal
         open={isModalOpen}

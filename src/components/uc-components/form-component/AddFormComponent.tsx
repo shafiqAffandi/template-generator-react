@@ -1,25 +1,21 @@
-import {
-  Controller,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import usePageStore from "../../../stores/PageStore";
-import { PagingInputType } from "../../../types/Type";
+import { FormInputType } from "../../../types/FormType";
 
 type Props = {
   identifier: string;
-  data?: PagingInputType;
+  data?: FormInputType;
+  idx?: number;
   onClose: () => void;
 };
 
 type InputsType = {
   title: string;
-  querystring: string;
-  exportExcel: boolean;
+  isVertical: boolean;
+  isSubsection: boolean;
 };
 
-function AddPagingComponent({ identifier, onClose, data }: Props) {
+function AddFormComponent({ identifier, onClose, data, idx = -1 }: Props) {
   const {
     control,
     register,
@@ -28,32 +24,30 @@ function AddPagingComponent({ identifier, onClose, data }: Props) {
     formState: { errors },
   } = useForm<InputsType>({
     defaultValues: {
-      title: data?.pagingInput.title ?? "",
-      querystring: data?.pagingInput.querystring?.name ?? "",
-      exportExcel: data?.pagingInput.exportExcel ?? false,
+      title: data?.title ?? "",
+      isVertical: data?.isVertical ?? true, // TODO: check default value on uc
+      isSubsection: data?.isSubsection ?? true, // TODO: check default value on uc
     },
   });
 
   const pageStore = usePageStore();
 
   const onSubmit: SubmitHandler<InputsType> = (dataInput) => {
-    const comp: PagingInputType = {
-      pagingInput: {
-        title: dataInput.title,
-        querystring: { name: dataInput.querystring },
-        exportExcel: dataInput.exportExcel,
-        component: [],
-        headerList: [],
-        bodyList: [],
-      },
+    const comp: FormInputType = {
+      title: dataInput.title,
+      isVertical: dataInput.isVertical,
+      isSubsection: dataInput.isSubsection,
+      formInput: [],
+      onLoad: [],
       criteria: [],
     };
-    if (data === undefined) {
-      pageStore.addPaging(identifier, comp);
+    if (data === undefined && idx === -1) {
+      pageStore.addSubForm(identifier, comp);
     }
-    if (data !== undefined) {
-      pageStore.editPaging(identifier, comp);
+    if (data !== undefined && idx !== -1) {
+      pageStore.editSubForm(identifier, idx, comp);
     }
+    reset();
     onClose();
   };
 
@@ -89,41 +83,23 @@ function AddPagingComponent({ identifier, onClose, data }: Props) {
               id="titleId"
             />
           </div>
-          <div className="mb-3 xl:w-96">
-            <label className="form-label mb-2 inline-block capitalize text-gray-700">
-              Query String
-            </label>
-            <input
-              type="text"
-              {...register("querystring")}
-              required
-              className="
-                    form-control
-                    m-0
-                    block
-                    w-full
-                    rounded
-                    border
-                    border-solid
-                    border-gray-300
-                    bg-white bg-clip-padding
-                    px-3 py-1.5 text-base
-                    font-normal
-                    text-gray-700
-                    transition
-                    ease-in-out
-                    focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
-                  "
-              id="queryStringId"
-            />
-          </div>
           <div className="mb-3 grid grid-cols-3 text-left">
-            <label className="col-span-1">Export Excel Button</label>
+            <label className="col-span-1">Vertical Column?</label>
             <div className="col-span-2 text-left">
               <input
                 id="exportExcelId"
                 type={"checkbox"}
-                {...register("exportExcel")}
+                {...register("isVertical")}
+              />
+            </div>
+          </div>
+          <div className="mb-3 grid grid-cols-3 text-left">
+            <label className="col-span-1">Use Subsection?</label>
+            <div className="col-span-2 text-left">
+              <input
+                id="exportExcelId"
+                type={"checkbox"}
+                {...register("isSubsection")}
               />
             </div>
           </div>
@@ -140,4 +116,4 @@ function AddPagingComponent({ identifier, onClose, data }: Props) {
   );
 }
 
-export default AddPagingComponent;
+export default AddFormComponent;

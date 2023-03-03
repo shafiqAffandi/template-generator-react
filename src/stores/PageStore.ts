@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { ActionPagingType } from "../types/ActionPagingType";
+import { FormInputTypeType } from "../types/FormInputType";
+import { FormInputType } from "../types/FormType";
 import {
   BodyPagingType,
   CriteriaPaging,
@@ -264,6 +266,81 @@ const removeCriteriaPaging = (
   return [...pages];
 };
 
+const addSubForm = (
+  pages: PageType[],
+  id: string,
+  comp: FormInputType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  if (pages[affectedPageIndex].forms === undefined)
+    Object.assign(pages[affectedPageIndex], {
+      forms: { serviceUrl: {}, subsection: [] },
+    });
+  pages[affectedPageIndex].forms?.subsection.push(comp);
+  return [...pages];
+};
+
+const editSubForm = (
+  pages: PageType[],
+  id: string,
+  compIdx: number,
+  comp: FormInputType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].forms!.subsection[compIdx].title = comp.title;
+  pages[affectedPageIndex].forms!.subsection[compIdx].isVertical =
+    comp.isVertical;
+  pages[affectedPageIndex].forms!.subsection[compIdx].isSubsection =
+    comp.isSubsection;
+  return [...pages];
+};
+
+const removeForm = (pages: PageType[], id: string): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  const { forms: _, ...newObj } = pages[affectedPageIndex];
+  pages[affectedPageIndex] = newObj;
+  return [...pages];
+};
+
+const removeSubForm = (
+  pages: PageType[],
+  id: string,
+  compIdx: number
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].forms?.subsection?.splice(compIdx, 1);
+  return [...pages];
+};
+
+const addFormInput = (pages: PageType[], id: string, compIdx: number, comp: FormInputTypeType) => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].forms?.subsection[compIdx].formInput.push(comp);
+  return [...pages];
+}
+
+const editFormInput = (
+  pages: PageType[],
+  id: string,
+  compIdx: number,
+  formInputIdx: number,
+  comp: FormInputTypeType
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].forms!.subsection![compIdx].formInput![formInputIdx] = comp;
+  return [...pages];
+}
+
+const removeFormInput = (
+  pages: PageType[],
+  id: string,
+  compIdx: number,
+  formInputIdx: number
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  pages[affectedPageIndex].forms?.subsection[compIdx].formInput.splice(formInputIdx, 1);
+  return [...pages];
+};
+
 type Store = {
   pages: PageType[];
   newPage: PageType;
@@ -310,6 +387,13 @@ type Store = {
     criteria: CriteriaPaging
   ) => void;
   removeCriteriaPaging: (id: string, index: number) => void;
+  removeForm: (id: string) => void;
+  addSubForm: (id: string, comp: FormInputType) => void;
+  editSubForm: (id: string, compIdx: number, comp: FormInputType) => void;
+  removeSubForm: (id: string, compIdx: number) => void;
+  addFormInput: (id: string, compIdx: number, comp: FormInputTypeType) => void;
+  editFormInput: (id: string, compIdx: number, formInputIdx: number, comp: FormInputTypeType) => void;
+  removeFormInput: (id: string, compIdx: number, formInputIdx: number) => void;
 };
 
 const usePageStore = create<Store>()(
@@ -481,6 +565,48 @@ const usePageStore = create<Store>()(
           pages: removeCriteriaPaging(state.pages, id, index),
         }));
       },
+      removeForm: (id: string) => {
+        set((state) => ({
+          ...state,
+          pages: removeForm(state.pages, id),
+        }));
+      },
+      addSubForm: (id: string, comp: FormInputType) => {
+        set((state) => ({
+          ...state,
+          pages: addSubForm(state.pages, id, comp),
+        }));
+      },
+      editSubForm: (id: string, compIdx: number, comp: FormInputType) => {
+        set((state) => ({
+          ...state,
+          pages: editSubForm(state.pages, id, compIdx, comp),
+        }));
+      },
+      removeSubForm: (id: string, compIdx: number) => {
+        set((state) => ({
+          ...state,
+          pages: removeSubForm(state.pages, id, compIdx),
+        }));
+      },
+      addFormInput: (id: string, compIdx: number, comp: FormInputTypeType) => {
+        set((state) => ({
+          ...state,
+          pages: addFormInput(state.pages, id, compIdx, comp),
+        }));
+      },
+      editFormInput: (id: string, compIdx: number, formInputIdx: number, comp: FormInputTypeType) => {
+        set((state) => ({
+          ...state,
+          pages: editFormInput(state.pages, id, compIdx, formInputIdx, comp),
+        }));
+      },
+      removeFormInput: (id: string, compIdx: number, formInputIdx: number) => {
+        set((state) => ({
+          ...state,
+          pages: removeFormInput(state.pages, id, compIdx, formInputIdx),
+        }));
+      }
     }),
     { name: LOCAL_KEY, storage: createJSONStorage(() => localStorage) }
   )

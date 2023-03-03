@@ -4,12 +4,20 @@ type Props = {
   register: UseFormRegister<any>;
   name: string;
   isRequired?: boolean;
+  inputType?: string;
 };
 
-export function Input({ register, name, isRequired = false, ...rest }: Props) {
+export function Input({
+  register,
+  name,
+  isRequired = false,
+  inputType = undefined,
+  ...rest
+}: Props) {
   return (
     <>
       <input
+        type={inputType ?? "text"}
         className="
         form-control
         m-0

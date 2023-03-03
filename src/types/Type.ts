@@ -1,4 +1,5 @@
 import { ActionPagingType } from "./ActionPagingType";
+import { FormComponentType, FormInputType } from "./FormType";
 
 export type PageType = {
   title: string;
@@ -6,6 +7,7 @@ export type PageType = {
   addButton: boolean;
   backButton: boolean;
   paging?: PagingInputType;
+  forms?: FormComponentType;
 };
 
 export type PagingInputType = {
