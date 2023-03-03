@@ -86,6 +86,7 @@ export type FormInputTypePercent = BaseFormInputTypeNoUppercase & {
 
 export type FormInputTypeLookup = Omit<BaseFormInputTypeNoUppercase, "IsEditable"> & {
   Type: "LOOKUP",
+  LookupName: string,
 };
 
 export type FormInputTypeDdl = BaseFormInputTypeNoUppercase & {

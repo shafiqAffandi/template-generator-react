@@ -4,6 +4,7 @@ import { TypeFormInput } from "../../../constant/TypeFormInput";
 import usePageStore from "../../../stores/PageStore";
 import {
   FormInputTypeAddress,
+  FormInputTypeBool,
   FormInputTypeDate,
   FormInputTypeDdl,
   FormInputTypeLabel,
@@ -90,7 +91,7 @@ function setDefaultValue(data: any, idx: number) {
     data.formInput[idx].Type === "TIME" ||
     data.formInput[idx].Type === "BOOL"
   ) {
-    const _data = data.formInput[idx] as FormInputTypeDate;
+    const _data = data.formInput[idx] as FormInputTypeBool;
     return {
       Type: _data.Type,
       Label: _data.Label,
@@ -125,7 +126,8 @@ function setDefaultValue(data: any, idx: number) {
 
   if (data.formInput[idx].Type === "LOOKUP") {
     // need further config
-    const _data = data.formInput[idx] as FormInputTypeDate;
+    const _data = data.formInput[idx] as FormInputTypeLookup;
+    console.log(_data);
     return {
       Type: _data.Type,
       Label: _data.Label,
@@ -134,12 +136,13 @@ function setDefaultValue(data: any, idx: number) {
       IsCallback: _data.IsCallback,
       IsReadonly: _data.IsReadonly,
       IsHide: _data.IsHide,
+      LookupName: _data.LookupName,
     };
   }
 
   if (data.formInput[idx].Type === "LABEL") {
     // need further config
-    const _data = data.formInput[idx] as FormInputTypeDate;
+    const _data = data.formInput[idx] as FormInputTypeLabel;
     return {
       Type: _data.Type,
       Label: _data.Label,
@@ -368,6 +371,7 @@ function AddFormInputComponent({
         IsCallback: _data.IsCallback,
         IsReadonly: _data.IsReadonly,
         IsHide: _data.IsHide,
+        LookupName: _data.LookupName,
       };
       Object.assign(comp, _comp);
     }
