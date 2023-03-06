@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_HOST_URL } from "../environments/environment";
 import usePageStore from "../stores/PageStore";
 import PageModal from "./PageModal";
 
@@ -8,7 +9,20 @@ function Navbar() {
 
   const onSaveHandler = () => {
     console.log("data saved!");
-    console.log(JSON.stringify(pageStore.pages));
+    const requestOptions: RequestInit = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ data: pageStore.pages }),
+    };
+    console.log(requestOptions.body);
+    fetch(`${API_HOST_URL}/pages/SavePage`, requestOptions)
+      .then((res) => {
+        if (res.ok) return res.json();
+      })
+      .then((data) => alert(data));
   };
 
   return (
