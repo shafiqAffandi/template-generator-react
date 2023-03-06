@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { API_HOST_URL } from "../environments/environment";
 import usePageStore from "../stores/PageStore";
+import DropdownNavbar from "./DropdownNavbar";
 import PageModal from "./PageModal";
 
 function Navbar() {
@@ -59,6 +60,11 @@ function Navbar() {
                   >
                     Add Page
                   </button>
+                </div>
+              </li>
+              <li className="nav-item">
+                <div className="mx-2 flex justify-center space-x-2">
+                  <DropdownNavbar />
                 </div>
               </li>
             </ul>
