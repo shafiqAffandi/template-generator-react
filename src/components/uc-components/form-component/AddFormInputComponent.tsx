@@ -169,7 +169,7 @@ function setDefaultValue(data: any, idx: number) {
       CustomValueName: _data.DdlReqObj?.CustomValueName ?? "Value",
 
       ReqObj: data.formInput[idx].isUseAPI
-        ? setDdlReqObj(data.formInput[idx].DdlReqObj.DdlReqObj)
+        ? setDdlReqObj(data.formInput[idx].DdlReqObj.ReqObj)
         : null,
     };
   }
@@ -189,7 +189,7 @@ function tranformToDdlReqObj(data: any) {
     CustomKeyName: data.CustomKeyName === "" ? "Key" : data.CustomKeyName,
     CustomValueName:
       data.CustomValueName === "" ? "Value" : data.CustomValueName,
-    DdlReqObj: DdlReqObj,
+    ReqObj: DdlReqObj,
   };
 }
 
@@ -239,6 +239,8 @@ function AddFormInputComponent({
 
     if (dataInput.Type === "TEXT" || dataInput.Type === "TEXTAREA") {
       const _data = dataInput as FormInputTypeText;
+      const _min = _data.Min === "" ? undefined : _data.Min;
+      const _max = _data.Max === "" ? undefined : _data.Max;
       if (dataInput.UseCustomPattern) {
         const _comp: FormInputTypeText = {
           Type: _data.Type,
@@ -250,8 +252,8 @@ function AddFormInputComponent({
           IsReadonly: _data.IsReadonly,
           IsHide: _data.IsHide,
           IsEditable: _data.IsEditable,
-          Min: _data.Min,
-          Max: _data.Max,
+          Min: _min,
+          Max: _max,
           Placeholder: _data.Placeholder,
           CustomPattern: _data.CustomPattern,
         };
@@ -269,8 +271,8 @@ function AddFormInputComponent({
           IsReadonly: _data.IsReadonly,
           IsHide: _data.IsHide,
           IsEditable: _data.IsEditable,
-          Min: _data.Min,
-          Max: _data.Max,
+          Min: _min,
+          Max: _max,
           Placeholder: _data.Placeholder,
         };
         Object.assign(comp, _comp);

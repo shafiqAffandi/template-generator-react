@@ -276,7 +276,7 @@ const addSubForm = (
   const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
   if (pages[affectedPageIndex].forms === undefined)
     Object.assign(pages[affectedPageIndex], {
-      forms: { serviceUrl: {}, subsection: [] },
+      forms: { serviceUrl: {}, subsection: [], criteria: [] },
     });
   pages[affectedPageIndex].forms?.subsection.push(comp);
   return [...pages];
@@ -343,6 +343,26 @@ const removeFormInput = (
   return [...pages];
 };
 
+const setServiceUrl = (
+  pages: PageType[],
+  id: string,
+  compService: any,
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  Object.assign(pages[affectedPageIndex].forms!.serviceUrl, compService);
+  return [...pages];
+}
+
+const setCriteriaForm = (
+  pages: PageType[],
+  id: string,
+  compCrit: any,
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  Object.assign(pages[affectedPageIndex].forms!.criteria, compCrit);
+  return [...pages];
+}
+
 type Store = {
   pages: PageType[];
   newPage: PageType;
@@ -396,6 +416,8 @@ type Store = {
   addFormInput: (id: string, compIdx: number, comp: FormInputTypeType) => void;
   editFormInput: (id: string, compIdx: number, formInputIdx: number, comp: FormInputTypeType) => void;
   removeFormInput: (id: string, compIdx: number, formInputIdx: number) => void;
+  setServiceUrl: (id: string, compServie: any) => void;
+  setCriteriaForm: (id: string, compCrit: any) => void;
 };
 
 const usePageStore = create<Store>()(
@@ -607,6 +629,18 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: removeFormInput(state.pages, id, compIdx, formInputIdx),
+        }));
+      },
+      setServiceUrl: (id: string, compService: any) => {
+        set((state) => ({
+          ...state,
+          pages: setServiceUrl(state.pages, id, compService),
+        }));
+      },
+      setCriteriaForm: (id: string, compCrit: any) => {
+        set((state) => ({
+          ...state,
+          pages: setCriteriaForm(state.pages, id, compCrit),
         }));
       }
     }),

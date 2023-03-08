@@ -1,6 +1,9 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import usePageStore from "../../../stores/PageStore";
 import { FormComponentType, FormInputType } from "../../../types/FormType";
+import { matchesEl } from "../../../utils/utils";
+import CriteriaFormModal from "./CriteriaFormModal";
+import ManageServiceModal from "./ManageServiceModal";
 import SubFormComponent from "./SubFormComponent";
 
 type Props = {
@@ -9,9 +12,20 @@ type Props = {
 };
 
 function FormComponent({ id, data }: Props) {
+  const [isManageOpen, setIsManageOpen] = useState(false);
+  const [isCriteriaOpen, setIsCriteriaOpen] = useState(false);
   const pageStore = usePageStore();
   const onRemove = () => {
     pageStore.removeForm(id);
+  };
+
+  const onManageServiceUrl = () => {
+    console.log("manage service");
+    setIsManageOpen(() => true);
+  };
+
+  const onSetCriteria = () => {
+    setIsCriteriaOpen(() => true);
   };
 
   return (
@@ -27,6 +41,18 @@ function FormComponent({ id, data }: Props) {
             );
           })}
           <button
+            onClick={() => onManageServiceUrl()}
+            className="mr-2 rounded bg-gray-500 p-2 font-semibold text-white"
+          >
+            Manage Service Url
+          </button>
+          <button
+            onClick={() => onSetCriteria()}
+            className="mr-2 rounded bg-gray-500 p-2 font-semibold text-white"
+          >
+            Set Criteria
+          </button>
+          <button
             onClick={() => onRemove()}
             className="mr-2 rounded bg-gray-500 p-2 font-semibold text-white"
           >
@@ -34,6 +60,18 @@ function FormComponent({ id, data }: Props) {
           </button>
         </div>
       </div>
+      <ManageServiceModal
+        id={id}
+        open={isManageOpen}
+        onClose={() => setIsManageOpen(false)}
+        data={data.serviceUrl}
+      />
+      <CriteriaFormModal
+        id={id}
+        open={isCriteriaOpen}
+        onClose={() => setIsCriteriaOpen(false)}
+        data={data.criteria}
+      />
     </>
   );
 }

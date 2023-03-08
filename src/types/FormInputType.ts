@@ -21,8 +21,8 @@ export type FormInputTypeText = BaseFormInputType & {
   Type: "TEXT",
   Pattern?: ValidatorPatternType,
   CustomPattern?: CustomPatternType[],
-  Min?: number,
-  Max?: number,
+  Min?: number | string,
+  Max?: number | string,
   Value?: string,
   Placeholder?: string,
 };
@@ -31,8 +31,8 @@ export type FormInputTypeTextarea = BaseFormInputType & {
   Type: "TEXTAREA",
   Pattern?: ValidatorPatternType,
   CustomPattern?: CustomPatternType[],
-  Min?: number,
-  Max?: number,
+  Min?: number | string,
+  Max?: number | string,
   Value?: string,
   Placeholder?: string,
 };

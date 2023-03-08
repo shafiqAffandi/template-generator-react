@@ -12,4 +12,5 @@ export type FormInputType = {
 export type FormComponentType = {
   subsection: FormInputType[];
   serviceUrl: Record<string, string>;
+  criteria: { get: string, set: string }[];
 };
