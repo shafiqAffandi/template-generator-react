@@ -1,11 +1,10 @@
 import { useState } from "react";
 import usePageStore from "../stores/PageStore";
 import { PageType } from "../types/Type";
+import ChildModal from "./ChildModal";
 import ComponentModal from "./ComponentModal";
 import PageComponent from "./PageComponent";
 import PageModal from "./PageModal";
-import FormComponent from "./uc-components/form-component/FormComponent";
-import PagingComponent from "./uc-components/paging-components/PagingComponent";
 
 type Props = {
   children: PageType;
@@ -15,6 +14,7 @@ type Props = {
 function Page({ children, onRemove }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openPageModal, setOpenPageModal] = useState(false);
+  const [openChildModal, setOpenChildModal] = useState(false);
   const pageStore = usePageStore();
   const data = pageStore.pages.find((item) => item.id === children.id);
   console.log(data?.addButton);
@@ -34,6 +34,13 @@ function Page({ children, onRemove }: Props) {
           </div>
 
           <div className="float-right">
+            <button
+              type="button"
+              onClick={() => setOpenChildModal(() => true)}
+              className="ml-1 rounded bg-blue-600 p-2 font-semibold text-white transition duration-100 ease-in-out hover:bg-blue-800"
+            >
+              Set Child
+            </button>
             <button
               type="button"
               onClick={() => setOpenPageModal(() => true)}
@@ -65,6 +72,12 @@ function Page({ children, onRemove }: Props) {
       >
         Edit New Page
       </PageModal>
+      <ChildModal
+        data={data?.child}
+        open={openChildModal}
+        onClose={() => setOpenChildModal(false)}
+        id={children.id}
+      />
     </>
   );
 }

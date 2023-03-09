@@ -79,7 +79,7 @@ export function Select1({
             ease-in-out
             focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
           "
-          {...register(name)}
+          {...register(`${name}` as const)}
           {...rest}
           required={isRequired}
         >
@@ -104,7 +104,7 @@ export function Select1({
             ease-in-out
             focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
           "
-          {...register(name)}
+          {...register(`${name}` as const)}
           {...rest}
           required={isRequired}
           onChange={(e) => onChange(e.target.value)}

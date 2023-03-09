@@ -1,49 +1,74 @@
+import { useEffect, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import usePageStore from "../../../stores/PageStore";
-import { Modal } from "../../ui-components/ModalComponent";
+import usePageStore from "../stores/PageStore";
+import { Modal } from "./ui-components/ModalComponent";
+import { Select } from "./ui-components/SelectComponent";
 
 type Props = {
   id: string;
   open: boolean;
   onClose: () => void;
-  data: any;
+  data?: any;
 };
 
-function setDefaultValue(data: any) {
-  if (data === undefined) return {};
-  return { criteria: data };
+function setDefaultData(data: string[]) {
+  const mappedData = data.map((item) => {
+    return {
+      childName: item,
+    };
+  });
+  return mappedData;
 }
 
-function CriteriaFormModal({ id, open, onClose, data }: Props) {
+function ChildModal({ id, open, onClose, data = [] }: Props) {
   if (!open) return null;
   const pageStore = usePageStore();
+  const [childList, setChildList] = useState([""]);
+
+  useEffect(() => {
+    const page = pageStore.pages;
+    const listPage = page.filter((el) => el.id != id);
+    const listId = listPage.map((item) => item.id);
+    setChildList(listId);
+  }, []);
+
   const {
-    control,
     register,
+    control,
+    unregister,
     handleSubmit,
     reset,
     watch,
     formState: { errors },
-  } = useForm<any>({
-    defaultValues: setDefaultValue(data),
+  } = useForm<{ child: { childName: string }[] }>({
+    defaultValues: {
+      child: setDefaultData(data),
+    },
   });
+
+  useEffect(() => {
+    let defaultValue: { child: { childName: string }[] } = { child: [] };
+    defaultValue.child = setDefaultData(data);
+    reset({ ...defaultValue });
+  }, []);
 
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
-    name: `criteria`, // unique name for your Field Array
+    name: "child", // unique name for your Field Array
   });
 
-  const onSubmit: SubmitHandler<any> = (dataInput) => {
-    console.log(dataInput);
-    const critArr: { get: string; set: string }[] = [];
-    dataInput.criteria.forEach((item: { get: string; set: string }) => {
-      critArr.push({
-        get: item.get,
-        set: item.set,
-      });
-    });
-    console.log(critArr);
-    pageStore.setCriteriaForm(id, critArr);
+  const onClickCancel = () => {
+    reset();
+    onClose();
+  };
+
+  const onSubmit: SubmitHandler<{ child: { childName: string }[] }> = (
+    dataInput
+  ) => {
+    const compChild: string[] = dataInput.child.map(
+      (item: { childName: string }) => item.childName
+    );
+    pageStore.setChildPage(id, compChild);
     reset();
     onClose();
   };
@@ -54,11 +79,12 @@ function CriteriaFormModal({ id, open, onClose, data }: Props) {
         <button
           type="button"
           className="inline-block rounded bg-slate-600 p-2 capitalize text-white shadow-lg transition duration-100 ease-in-out hover:bg-red-600"
-          onClick={() => onClose()}
+          onClick={() => onClickCancel()}
         >
           cancel
         </button>
       </div>
+      <p>form goes here</p>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex">
           <div className="m-1 my-auto">
@@ -76,13 +102,20 @@ function CriteriaFormModal({ id, open, onClose, data }: Props) {
           </div>
         </div>
         <ul className="w-full">
+          <div className="col-span-4 p-1">
+            <label className="form-label mb-2 inline-block capitalize text-gray-700">
+              child
+            </label>
+          </div>
           {fields.map((item, index) => (
             <div key={item.id} className="grid grid-cols-12">
               <div className="col-span-4 p-1">
-                <label className="form-label mb-2 inline-block capitalize text-gray-700">
-                  get value
-                </label>
-                <input
+                <Select
+                  register={register}
+                  name={`child.${index}.childName`}
+                  options={childList}
+                />
+                {/* <select
                   className="
                       form-control
                       m-0
@@ -100,33 +133,8 @@ function CriteriaFormModal({ id, open, onClose, data }: Props) {
                       ease-in-out
                       focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
                     "
-                  {...register(`criteria.${index}.get` as const)}
-                />
-              </div>
-              <div className="col-span-4 p-1">
-                <label className="form-label mb-2 inline-block capitalize text-gray-700">
-                  set value
-                </label>
-                <input
-                  className="
-                      form-control
-                      m-0
-                      block
-                      w-full
-                      rounded
-                      border
-                      border-solid
-                      border-gray-300
-                      bg-white bg-clip-padding
-                      px-3 py-1.5 text-base
-                      font-normal
-                      text-gray-700
-                      transition
-                      ease-in-out
-                      focus:border-blue-400 focus:bg-white focus:text-gray-700 focus:outline-none
-                    "
-                  {...register(`criteria.${index}.set` as const)}
-                />
+                  {...register(`child.${index}.childName` as const)}
+                /> */}
               </div>
               <div className="flex flex-col">
                 <button
@@ -143,7 +151,7 @@ function CriteriaFormModal({ id, open, onClose, data }: Props) {
         <div className="w-full">
           <input
             type="submit"
-            value={Object.keys(data).length === 0 ? "Add" : "Save Changes"}
+            value={data.length === 0 ? "Add" : "Save Changes"}
             className="inline-block w-full rounded bg-green-500 px-6 py-2.5 text-xs font-bold capitalize leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:text-white hover:shadow-lg"
           />
         </div>
@@ -152,4 +160,4 @@ function CriteriaFormModal({ id, open, onClose, data }: Props) {
   );
 }
 
-export default CriteriaFormModal;
+export default ChildModal;

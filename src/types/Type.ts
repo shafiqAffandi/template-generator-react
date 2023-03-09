@@ -9,6 +9,7 @@ export type PageType = {
   backButton: boolean;
   paging?: PagingInputType;
   forms?: FormComponentType;
+  child?: string[];
 };
 
 export type PagingInputType = {

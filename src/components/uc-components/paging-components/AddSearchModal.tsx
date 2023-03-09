@@ -12,7 +12,7 @@ import {
 } from "../../../utils/utils";
 import { Input } from "../../ui-components/InputComponent";
 import { Modal } from "../../ui-components/ModalComponent";
-import { Select, Select2 } from "../../ui-components/SelectComponent";
+import { Select } from "../../ui-components/SelectComponent";
 
 type Props = {
   open: boolean;
@@ -186,7 +186,7 @@ function AddSearchModal({ open, onClose, id, data, index }: Props) {
                   <label className="form-label mb-2 inline-block capitalize text-gray-700">
                     Dropdown Type
                   </label>
-                  <Select2
+                  <Select
                     name="ddlType"
                     options={["all", "one", "none"]}
                     register={register}

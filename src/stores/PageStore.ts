@@ -363,6 +363,19 @@ const setCriteriaForm = (
   return [...pages];
 }
 
+const setChildPage = (
+  pages: PageType[],
+  id: string,
+  compChild: string[],
+): PageType[] => {
+  const affectedPageIndex = pages.findIndex((el) => matchesEl(el, id));
+  Object.assign(pages[affectedPageIndex], {
+    child: [],
+  });
+  Object.assign(pages[affectedPageIndex].child!, compChild);
+  return [...pages];
+}
+
 type Store = {
   pages: PageType[];
   newPage: PageType;
@@ -418,6 +431,7 @@ type Store = {
   removeFormInput: (id: string, compIdx: number, formInputIdx: number) => void;
   setServiceUrl: (id: string, compServie: any) => void;
   setCriteriaForm: (id: string, compCrit: any) => void;
+  setChildPage: (id: string, compChild: string[]) => void;
 };
 
 const usePageStore = create<Store>()(
@@ -641,6 +655,12 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: setCriteriaForm(state.pages, id, compCrit),
+        }));
+      },
+      setChildPage: (id: string, compChild: any) => {
+        set((state) => ({
+          ...state,
+          pages: setChildPage(state.pages, id, compChild),
         }));
       }
     }),
