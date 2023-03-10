@@ -377,6 +377,7 @@ const setChildPage = (
 }
 
 type Store = {
+  menuId: string;
   pages: PageType[];
   newPage: PageType;
   addPage: () => void;
@@ -437,6 +438,7 @@ type Store = {
 const usePageStore = create<Store>()(
   persist(
     (set) => ({
+      menuId: "",
       pages: [],
       newPage: { title: "", id: "", addButton: false, addLink: "", backButton: false },
       addPage: () => {

@@ -34,11 +34,16 @@ const setDefaultValue = (
   if (idx === -1) return {} as any;
   if (data.action![idx].type === "edit") {
     const _data = data.action![idx] as ActionEditType;
+    let path = _data.path; // TODO
+    if (_data.pathOption === "fromChild") {
+      path = _data.path.replace("/BREAD/", "");
+    }
     return {
       type: _data.type,
       icon: _data.icon,
       param: _data.param,
-      path: _data.path,
+      path: path,
+      pathOption: _data.pathOption,
     };
   }
   if (data.action![idx].type === "delete") {
@@ -144,14 +149,19 @@ function ManageAddActionModal({
 
   const onSubmit: SubmitHandler<any> = (data) => {
     const action: ActionPagingType = {} as any;
-
     if (data.type === "edit") {
       const _data = data as ActionEditType;
-      const path = data.isSelfCustom ? _data.path : "/BREAD/${addLink}";
+      let path = _data.path;
+      if (_data.pathOption === "def") {
+        path = "/BREAD/${addLink}";
+      }
+      if (_data.pathOption === "fromChild") {
+        path = `/BREAD/${_data.path}`;
+      }
       const params = _data.param.map((item) => {
         return { type: item.type, property: item.property };
       });
-      if (!data.isSelfCustom) {
+      if (_data.pathOption === "selfCustom") {
         params.push({ type: "mode", property: "edit" });
         params.push({ type: "view", property: "form" });
       }
@@ -160,6 +170,7 @@ function ManageAddActionModal({
         path: path,
         param: params,
         icon: _data.icon,
+        pathOption: _data.pathOption,
       };
       Object.assign(action, _action);
     }
@@ -229,6 +240,7 @@ function ManageAddActionModal({
           </div>
           {watchTypeDdl === "edit" ? (
             <ActionTypeEditComponent
+              id={id}
               register={register}
               control={control}
               watch={watch}

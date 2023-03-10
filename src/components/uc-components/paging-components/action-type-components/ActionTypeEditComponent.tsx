@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray } from "react-hook-form";
+import usePageStore from "../../../../stores/PageStore";
+import { matchesEl } from "../../../../utils/utils";
 import { Input } from "../../../ui-components/InputComponent";
+import { Select } from "../../../ui-components/SelectComponent";
 
 type Props = {
+  id: string;
   register: any;
   control: any;
   watch: any;
@@ -10,6 +14,7 @@ type Props = {
 };
 
 function ActionTypeEditComponent({
+  id,
   register,
   control,
   watch,
@@ -21,31 +26,74 @@ function ActionTypeEditComponent({
     name: `${arrName}param`, // unique name for your Field Array
   });
 
-  const watchTypeSelfCustom = watch(`${arrName}isSelfCustom`);
+  const pageStore = usePageStore();
+  const [childList, setChildList] = useState([""]);
+  const [childReady, setChildReady] = useState(false);
 
   useEffect(() => {
-    if (watchTypeSelfCustom === undefined) return;
-    console.log(watchTypeSelfCustom);
-  }, [watchTypeSelfCustom]);
+    const page = pageStore.pages.find((el) => matchesEl(el, id));
+    setChildList(() => page?.child ?? []);
+    setChildReady(() => true);
+  }, []);
 
+  const watchTypePathOption = watch(`${arrName}pathOption`);
   return (
     <>
       <div className="mt-2 grid grid-cols-3 text-left">
-        <label className="col-span-1">Self Custom?</label>
+        <label className="col-span-1">Path Option</label>
         <div className="col-span-2 text-left">
-          <input
-            type={"checkbox"}
-            {...register(`${arrName}` + "isSelfCustom")}
-          />
+          <label className="mr-6">
+            <input
+              value="def"
+              type={"radio"}
+              checked={
+                watchTypePathOption === null || watchTypePathOption === "def"
+              }
+              {...register(`${arrName}` + "pathOption")}
+            />
+            Default
+          </label>
+          <label className="mr-6">
+            <input
+              value="selfCustom"
+              type={"radio"}
+              {...register(`${arrName}` + "pathOption")}
+            />
+            Self Custom
+          </label>
+          <label className="mr-6">
+            <input
+              value="fromChild"
+              type={"radio"}
+              {...register(`${arrName}` + "pathOption")}
+            />
+            From Child
+          </label>
         </div>
       </div>
-      {watchTypeSelfCustom ? (
+      {watchTypePathOption === "selfCustom" ? (
         <>
           <div className="mb-3 xl:w-96">
             <label className="form-label mb-2 inline-block capitalize text-gray-700">
               Path
             </label>
             <Input name={`${arrName}` + "path"} register={register} />
+          </div>
+        </>
+      ) : null}
+
+      {watchTypePathOption === "fromChild" && childReady ? (
+        <>
+          <p>should've be a ddl</p>
+          <div className="mb-3 xl:w-96">
+            <label className="form-label mb-2 inline-block capitalize text-gray-700">
+              Path
+            </label>
+            <Select
+              register={register}
+              name={`${arrName}` + "path"}
+              options={childList}
+            />
           </div>
         </>
       ) : null}

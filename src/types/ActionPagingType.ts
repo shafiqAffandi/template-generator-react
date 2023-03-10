@@ -34,6 +34,7 @@ export type ActionEditType = {
   path: string;
   param: ParamType[];
   icon: string;
+  pathOption: string;
 };
 
 export type ActionDeleteType = {
