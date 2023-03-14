@@ -378,12 +378,16 @@ const setChildPage = (
 
 type Store = {
   menuId: string;
+  menuName: string;
   pages: PageType[];
   newPage: PageType;
+  setMenu: (menuId: string, menuName: string) => void;
+  setPage: (pages: PageType[]) => void;
   addPage: () => void;
   editPage: (id: string) => void;
   setNewPage: (title: string, addButton: boolean, addLink: string, backButton: boolean) => void;
   removePage: (id: string) => void;
+  clearPage: () => void;
   addPaging: (id: string, comp: PagingInputType) => void;
   editPaging: (id: string, comp: PagingInputType) => void;
   removePaging: (id: string) => void;
@@ -439,8 +443,22 @@ const usePageStore = create<Store>()(
   persist(
     (set) => ({
       menuId: "",
+      menuName: "",
       pages: [],
       newPage: { title: "", id: "", addButton: false, addLink: "", backButton: false },
+      setMenu: (menuId: string, menuName: string) => {
+        set((state) => ({
+          ...state,
+          menuName: menuName,
+          menuId: toUpper(menuId).replace(/\s+/g, "")
+        }));
+      },
+      setPage: (pages: PageType[]) => {
+        set((state) => ({
+          ...state,
+          pages: pages
+        }));
+      },
       addPage: () => {
         set((state) => ({
           ...state,
@@ -464,6 +482,12 @@ const usePageStore = create<Store>()(
         set((state) => ({
           ...state,
           pages: removePage(state.pages, id),
+        }));
+      },
+      clearPage: () => {
+        set((state) => ({
+          ...state,
+          pages: [],
         }));
       },
       addPaging: (id: string, component: PagingInputType) => {

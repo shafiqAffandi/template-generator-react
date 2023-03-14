@@ -16,7 +16,13 @@ function Navbar() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ data: pageStore.pages }),
+      body: JSON.stringify({
+        pageData: pageStore.pages,
+        menuData: {
+          menuId: pageStore.menuId,
+          menuName: pageStore.menuName,
+        },
+      }),
     };
     console.log(requestOptions.body);
     fetch(`${API_HOST_URL}/pages/SavePage`, requestOptions)
@@ -30,6 +36,26 @@ function Navbar() {
     <>
       <nav className="relative mb-3 flex flex-wrap items-center justify-between bg-slate-500/0 px-2 py-3">
         <div className="container mx-auto flex flex-wrap items-center justify-between px-4">
+          <div
+            className="flex flex-grow items-center"
+            id="example-navbar-danger"
+          >
+            <ul className="flex list-none flex-col lg:mr-auto lg:flex-row">
+              <li className="nav-item">
+                <div className="mx-2 flex justify-center">
+                  <DropdownNavbar />
+                </div>
+              </li>
+            </ul>
+          </div>
+          {/* <div
+            className="flex flex-grow items-center"
+            id="example-navbar-danger"
+          >
+            <p className="inline-block whitespace-nowrap py-2 text-sm font-bold uppercase leading-relaxed text-white">
+              Template Editor
+            </p>
+          </div> */}
           <div className="relative flex w-full justify-between lg:static lg:block lg:w-auto lg:justify-start">
             <p className="inline-block whitespace-nowrap py-2 text-sm font-bold uppercase leading-relaxed text-white">
               Template Editor
@@ -60,11 +86,6 @@ function Navbar() {
                   >
                     Add Page
                   </button>
-                </div>
-              </li>
-              <li className="nav-item">
-                <div className="mx-2 flex justify-center space-x-2">
-                  <DropdownNavbar />
                 </div>
               </li>
             </ul>
